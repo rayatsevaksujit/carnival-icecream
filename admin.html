@@ -67,13 +67,36 @@ function listenProducts(){if(unsubscribe)unsubscribe();unsubscribe=db.collection
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function render(products){document.getElementById('list').innerHTML=products.length?products.map(p=>'<div class="item"><div style="display:flex;align-items:center;gap:10px;min-width:0"><img src="'+esc(p.img||defaultImg)+'" style="width:46px;height:46px;object-fit:cover;border-radius:12px;background:#fce7f3"><span>'+esc(p.name)+'<br><small style="color:#e11d48">₹'+Number(p.price||0)+' · '+esc(p.category)+'</small></span></div><button class="del" onclick="delProduct(\''+esc(p.id)+'\')">काढा</button></div>').join(''):'<p class="note">मेनूमध्ये अजून पदार्थ नाहीत.</p>'}
 async function delProduct(id){if(!confirm('हा पदार्थ कायमचा काढायचा आहे का?'))return;try{await db.collection('products').doc(id).delete();alert('पदार्थ काढला.')}catch(e){alert('पदार्थ काढता आला नाही: '+friendly(e))}}
+async function compressImage(file){
+ if(!file||file.size<=5*1024*1024)return file;
+ const url=URL.createObjectURL(file);
+ try{
+  const img=new Image();
+  await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=url});
+  let maxSide=2600,w=img.naturalWidth,h=img.naturalHeight;
+  if(Math.max(w,h)>maxSide){const scale=maxSide/Math.max(w,h);w=Math.round(w*scale);h=Math.round(h*scale)}
+  const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
+  let blob=null,quality=.9;
+  for(let pass=0;pass<12;pass++){
+   canvas.width=w;canvas.height=h;ctx.clearRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);
+   blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',quality));
+   if(blob&&blob.size<=4.7*1024*1024)break;
+   if(quality>.5)quality-=.06;else{w=Math.max(900,Math.round(w*.82));h=Math.max(900,Math.round(h*.82))}
+  }
+  if(!blob||blob.size>5*1024*1024)throw new Error('फोटो 5 MB च्या आत करता आला नाही.');
+  return new File([blob],file.name.replace(/\\.[^.]+$/,'')+'.jpg',{type:'image/jpeg',lastModified:Date.now()});
+ }finally{URL.revokeObjectURL(url)}
+}
 async function addProduct(){
  const name=document.getElementById('name').value.trim(),cat=document.getElementById('cat').value,price=Number(document.getElementById('price').value),file=document.getElementById('img').files[0],btn=document.getElementById('add-btn');
- if(!name||!price){alert('नाव आणि किंमत भरा.');return} if(file&&file.size>5*1024*1024){alert('कृपया 5 MB पेक्षा कमी फोटो निवडा.');return}
- btn.disabled=true;btn.textContent='जोडत आहे...';
- try{let img=defaultImg;if(file){const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'_'),ref=storage.ref('products/'+Date.now()+'_'+safe),up=await ref.put(file);img=await up.ref.getDownloadURL()}
- await db.collection('products').add({name,category:cat,price,img,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
- document.getElementById('name').value='';document.getElementById('price').value='';document.getElementById('img').value='';alert('✅ पदार्थ Firebase मेनूमध्ये जोडला.')
+ if(!name||!price){alert('नाव आणि किंमत भरा.');return}
+ btn.disabled=true;btn.textContent=file&&file.size>5*1024*1024?'फोटोची साईज कमी करत आहे...':'जोडत आहे...';
+ try{
+  let img=defaultImg,uploadFile=file;
+  if(file){uploadFile=await compressImage(file);const safe=uploadFile.name.replace(/[^a-zA-Z0-9._-]/g,'_'),ref=storage.ref('products/'+Date.now()+'_'+safe),up=await ref.put(uploadFile);img=await up.ref.getDownloadURL()}
+  await db.collection('products').add({name,category:cat,price,img,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+  document.getElementById('name').value='';document.getElementById('price').value='';document.getElementById('img').value='';
+  alert('✅ पदार्थ Firebase मेनूमध्ये जोडला.')
  }catch(e){alert('पदार्थ जोडता आला नाही: '+friendly(e))}finally{btn.disabled=false;btn.textContent='मेनूमध्ये जोडा'}
 }
 if(sessionStorage.getItem('carnival_admin')==='1')showPanel();else showLogin();

@@ -2,7 +2,7 @@
 <html lang="mr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Carnival Ice Cream, Bhilawadi - डिजिटल मेनू</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,17 +12,60 @@
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Rozha+One&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Mukta', sans-serif; }
+        :root { --header-height: 104px; }
+        * { box-sizing: border-box; }
+        html { width: 100%; overflow-x: hidden; scroll-behavior: smooth; }
+        body {
+            font-family: 'Mukta', sans-serif;
+            width: 100%;
+            min-width: 0;
+            overflow-x: hidden;
+            background-color: #fff5f7;
+            background-image:
+                linear-gradient(rgba(255,245,247,.91), rgba(255,245,247,.94)),
+                url('https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=1400&q=70');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
         .brand-font { font-family: 'Rozha One', serif; letter-spacing: 0.5px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .site-header { min-height: var(--header-height); padding-top: max(1rem, env(safe-area-inset-top)); }
+        .content-width { width: min(100%, 760px); margin-left: auto; margin-right: auto; }
+        .category-nav { top: var(--header-height); width: 100%; }
+        .category-inner { width: min(100%, 760px); margin: 0 auto; }
+        .products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .product-card { min-width: 0; }
+        .product-card img { display: block; }
+        .floating-cart { width: min(calc(100% - 2rem), 760px); left: 50%; right: auto; transform: translateX(-50%); padding-bottom: env(safe-area-inset-bottom); }
+        @media (min-width: 768px) { .products-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        @media (max-width: 480px) {
+            :root { --header-height: 108px; }
+            .mobile-header-inner { gap: 8px; }
+            .mobile-header-actions { flex-shrink: 0; }
+            .hero-banner { height: 180px; }
+            .products-grid { gap: 10px; }
+            .product-card { padding: 10px; border-radius: 22px; }
+            .product-card-image { height: 118px !important; }
+            .floating-cart { width: calc(100% - 1rem); bottom: 8px; }
+        }
+        @media (max-width: 360px) {
+            :root { --header-height: 116px; }
+            .hero-banner { height: 165px; }
+            .products-grid { grid-template-columns: 1fr; }
+            .mobile-header-actions a { display: none; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            * { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+        }
     </style>
 </head>
 <body class="bg-[#FFF5F7] text-gray-800 pb-36">
 
     <!-- Top Sticky Header -->
-    <header class="bg-gradient-to-r from-rose-500 via-pink-500 to-amber-400 text-white pt-4 pb-4 px-4 shadow-lg sticky top-0 z-40">
-        <div class="max-w-md mx-auto flex justify-between items-center">
+    <header class="site-header bg-gradient-to-r from-rose-500 via-pink-500 to-amber-400 text-white pt-4 pb-4 px-4 shadow-lg sticky top-0 z-40">
+        <div class="content-width mobile-header-inner flex justify-between items-center">
             <div>
                 <span class="bg-white/20 backdrop-blur-md text-[10px] font-bold px-2 py-0.5 rounded-full border border-white/30 uppercase tracking-wider">🍦 १००% शुध्द & टेस्टी</span>
                 <h1 class="brand-font text-2xl font-bold tracking-tight drop-shadow-sm mt-0.5">Carnival Ice Cream</h1>
@@ -32,7 +75,7 @@
                     <span>↗</span>
                 </a>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="mobile-header-actions flex items-center gap-2">
                 <a href="tel:+919860271523" class="bg-white/20 hover:bg-white/30 p-2.5 rounded-2xl backdrop-blur-md border border-white/30 text-white transition active:scale-95" title="कॉल करा">
                     📞
                 </a>
@@ -44,8 +87,8 @@
     </header>
 
     <!-- Auto-Sliding Image Banner -->
-    <div class="max-w-md mx-auto px-4 mt-3">
-        <div class="relative w-full h-44 rounded-3xl overflow-hidden shadow-md bg-gray-200">
+    <div class="content-width px-4 mt-3">
+        <div class="hero-banner relative w-full h-44 rounded-3xl overflow-hidden shadow-md bg-gray-200">
             <div id="slider-track" class="flex transition-transform duration-700 ease-out h-full">
                 <div class="w-full flex-shrink-0 h-full relative">
                     <img src="https://images.unsplash.com/photo-1501443762994-82bd5dace89a?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
@@ -75,7 +118,7 @@
     </div>
 
     <!-- Quick Info Strip -->
-    <div class="max-w-md mx-auto px-4 mt-3 grid grid-cols-2 gap-2 text-xs font-semibold">
+    <div class="content-width px-4 mt-3 grid grid-cols-2 gap-2 text-xs font-semibold">
         <a href="https://share.google/nsYQ72VMPlfgXjMY6" target="_blank" class="bg-white p-2.5 rounded-2xl shadow-sm border border-pink-100 flex items-center justify-center gap-1.5 text-gray-700 hover:text-rose-600 transition active:scale-95">
             <span class="text-base text-rose-500">📍</span>
             <span>दुकान लोकेशन व रिव्ह्यू</span>
@@ -87,8 +130,8 @@
     </div>
 
     <!-- Category Tabs -->
-    <div class="sticky top-[86px] z-30 bg-[#FFF5F7]/95 backdrop-blur-md py-2.5 px-3 mt-1">
-        <div class="max-w-md mx-auto flex gap-2 overflow-x-auto no-scrollbar" id="category-tabs">
+    <div class="category-nav sticky z-30 bg-[#FFF5F7]/95 backdrop-blur-md py-2.5 px-3 mt-1">
+        <div class="category-inner flex gap-2 overflow-x-auto no-scrollbar" id="category-tabs">
             <button onclick="filterCategory('सर्व')" class="cat-btn bg-rose-500 text-white px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap shadow-md shadow-rose-200 transition">✨ सर्व मेनू</button>
             <button onclick="filterCategory('आईस्क्रीम')" class="cat-btn bg-white text-gray-700 px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap border border-pink-100 shadow-sm transition">🍨 आईस्क्रीम</button>
             <button onclick="filterCategory('मिल्कशेख')" class="cat-btn bg-white text-gray-700 px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap border border-pink-100 shadow-sm transition">🥤 मिल्कशेख</button>
@@ -98,8 +141,8 @@
     </div>
 
     <!-- Main Products Grid -->
-    <main class="max-w-md mx-auto px-4 mt-2">
-        <div class="grid grid-cols-2 gap-3.5" id="product-list"></div>
+    <main class="content-width px-4 mt-2">
+        <div class="products-grid grid gap-3.5" id="product-list"></div>
     </main>
 
     <!-- Full Image Preview Modal -->
@@ -122,7 +165,7 @@
     </div>
 
     <!-- Floating Cart Bar -->
-    <div id="cart-bar" class="fixed bottom-4 left-4 right-4 max-w-md mx-auto hidden z-40">
+    <div id="cart-bar" class="floating-cart fixed bottom-4 hidden z-40">
         <div class="bg-gray-900/95 backdrop-blur-lg text-white p-3.5 rounded-3xl shadow-2xl flex justify-between items-center cursor-pointer border border-white/10 active:scale-98 transition" onclick="openBucketModal()">
             <div class="flex items-center gap-3">
                 <div class="bg-rose-500 text-white font-extrabold text-xs w-7 h-7 rounded-full flex items-center justify-center shadow" id="cart-count">0</div>
@@ -180,7 +223,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="max-w-md mx-auto px-4 mt-8 text-center text-xs text-gray-500 pb-12 border-t border-pink-100 pt-6">
+    <footer class="content-width px-4 mt-8 text-center text-xs text-gray-500 pb-12 border-t border-pink-100 pt-6">
         <div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 p-4 rounded-3xl shadow-sm mb-5 text-center">
             <p class="font-extrabold text-gray-800 text-sm mb-1">Carnival Ice Cream आवडले का? 🍨</p>
             <p class="text-[11px] text-gray-600 mb-3">तुमचा अनमोल रिव्ह्यू आम्हाला गुगलवर नक्की द्या!</p>
@@ -300,9 +343,9 @@
             filteredProducts.forEach((p) => {
                 let productJSON = encodeURIComponent(JSON.stringify(p));
                 listHTML += `
-                    <div class="bg-white p-3 rounded-3xl shadow-sm border border-pink-50 flex flex-col justify-between hover:shadow-md transition">
+                    <div class="product-card bg-white p-3 rounded-3xl shadow-sm border border-pink-50 flex flex-col justify-between hover:shadow-md transition">
                         <div>
-                            <div onclick="showFullImage('${productJSON}')" class="w-full h-28 rounded-2xl overflow-hidden mb-2.5 relative bg-pink-100 cursor-pointer group">
+                            <div class="product-card-image" onclick="showFullImage('${productJSON}')" class="w-full h-28 rounded-2xl overflow-hidden mb-2.5 relative bg-pink-100 cursor-pointer group">
                                 <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                                 <span class="absolute top-2 left-2 text-[10px] bg-white/90 backdrop-blur-md text-rose-600 font-bold px-2 py-0.5 rounded-full shadow-sm">${p.category}</span>
                                 <span class="absolute bottom-1.5 right-1.5 bg-black/40 text-white text-[10px] px-1.5 py-0.5 rounded-md backdrop-blur-xs">🔍 पहा</span>

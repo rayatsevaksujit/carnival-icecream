@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carnival Ice Cream, Bhilawadi - डिजिटल मेनू</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Mukta & Rozha One -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Rozha+One&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Mukta', sans-serif; }
+        .brand-font { font-family: 'Rozha One', serif; letter-spacing: 0.5px; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-[#FFF5F7] text-gray-800 pb-36">
+
+    <!-- Top Sticky Header -->
+    <header class="bg-gradient-to-r from-rose-500 via-pink-500 to-amber-400 text-white pt-4 pb-4 px-4 shadow-lg sticky top-0 z-40">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <div>
+                <span class="bg-white/20 backdrop-blur-md text-[10px] font-bold px-2 py-0.5 rounded-full border border-white/30 uppercase tracking-wider">🍦 १००% शुध्द & टेस्टी</span>
+                <h1 class="brand-font text-2xl font-bold tracking-tight drop-shadow-sm mt-0.5">Carnival Ice Cream</h1>
+                <p class="text-xs text-rose-100 font-semibold">भिलवडी (Bhilawadi)</p>
+                <a href="https://share.google/nsYQ72VMPlfgXjMY6" target="_blank" class="inline-flex items-center gap-1 bg-amber-400 text-gray-900 font-extrabold text-[10px] px-2.5 py-0.5 rounded-full mt-1.5 shadow-sm active:scale-95 transition">
+                    <span>⭐ ५.० गुगल रिव्ह्यू द्या</span>
+                    <span>↗</span>
+                </a>
+            </div>
+            <div class="flex items-center gap-2">
+                <a href="tel:+919860271523" class="bg-white/20 hover:bg-white/30 p-2.5 rounded-2xl backdrop-blur-md border border-white/30 text-white transition active:scale-95" title="कॉल करा">
+                    📞
+                </a>
+                <button onclick="openAdminLogin()" class="bg-white/20 backdrop-blur-md border border-white/30 text-white px-2.5 py-1.5 rounded-2xl hover:bg-white/30 transition shadow-sm active:scale-95 text-xs font-bold flex items-center gap-1">
+                    ⚙️ ॲडमिन
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Auto-Sliding Image Banner -->
+    <div class="max-w-md mx-auto px-4 mt-3">
+        <div class="relative w-full h-44 rounded-3xl overflow-hidden shadow-md bg-gray-200">
+            <div id="slider-track" class="flex transition-transform duration-700 ease-out h-full">
+                <div class="w-full flex-shrink-0 h-full relative">
+                    <img src="https://images.unsplash.com/photo-1501443762994-82bd5dace89a?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent flex items-end p-4">
+                        <span class="text-white text-xs font-bold drop-shadow">🍨 स्पेशल स्कूप्स आणि संडे उपलब्ध!</span>
+                    </div>
+                </div>
+                <div class="w-full flex-shrink-0 h-full relative">
+                    <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent flex items-end p-4">
+                        <span class="text-white text-xs font-bold drop-shadow">✨ अस्सल चवीची मलाई लस्सी आणि शेक्स</span>
+                    </div>
+                </div>
+                <div class="w-full flex-shrink-0 h-full relative">
+                    <img src="https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent flex items-end p-4">
+                        <span class="text-white text-xs font-bold drop-shadow">🎉 Carnival स्पेशल आईस्क्रीम व्हरायटी!</span>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute bottom-2 right-3 flex gap-1.5 z-10" id="slider-dots">
+                <span class="w-2 h-2 rounded-full bg-white"></span>
+                <span class="w-2 h-2 rounded-full bg-white/50"></span>
+                <span class="w-2 h-2 rounded-full bg-white/50"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Info Strip -->
+    <div class="max-w-md mx-auto px-4 mt-3 grid grid-cols-2 gap-2 text-xs font-semibold">
+        <a href="https://share.google/nsYQ72VMPlfgXjMY6" target="_blank" class="bg-white p-2.5 rounded-2xl shadow-sm border border-pink-100 flex items-center justify-center gap-1.5 text-gray-700 hover:text-rose-600 transition active:scale-95">
+            <span class="text-base text-rose-500">📍</span>
+            <span>दुकान लोकेशन व रिव्ह्यू</span>
+        </a>
+        <a href="tel:+919860271523" class="bg-white p-2.5 rounded-2xl shadow-sm border border-pink-100 flex items-center justify-center gap-1.5 text-gray-700 hover:text-rose-600 transition active:scale-95">
+            <span class="text-base text-emerald-500">📞</span>
+            <span>+91 98602 71523</span>
+        </a>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="sticky top-[86px] z-30 bg-[#FFF5F7]/95 backdrop-blur-md py-2.5 px-3 mt-1">
+        <div class="max-w-md mx-auto flex gap-2 overflow-x-auto no-scrollbar" id="category-tabs">
+            <button onclick="filterCategory('सर्व')" class="cat-btn bg-rose-500 text-white px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap shadow-md shadow-rose-200 transition">✨ सर्व मेनू</button>
+            <button onclick="filterCategory('आईस्क्रीम')" class="cat-btn bg-white text-gray-700 px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap border border-pink-100 shadow-sm transition">🍨 आईस्क्रीम</button>
+            <button onclick="filterCategory('मिल्कशेख')" class="cat-btn bg-white text-gray-700 px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap border border-pink-100 shadow-sm transition">🥤 मिल्कशेख</button>
+            <button onclick="filterCategory('लस्सी')" class="cat-btn bg-white text-gray-700 px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap border border-pink-100 shadow-sm transition">🥛 लस्सी</button>
+            <button onclick="filterCategory('सोडा/कोल्डड्रिंक्स')" class="cat-btn bg-white text-gray-700 px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap border border-pink-100 shadow-sm transition">🍹 सोडा / ड्रिंक्स</button>
+        </div>
+    </div>
+
+    <!-- Main Products Grid -->
+    <main class="max-w-md mx-auto px-4 mt-2">
+        <div class="grid grid-cols-2 gap-3.5" id="product-list"></div>
+    </main>
+
+    <!-- Full Image Preview Modal -->
+    <div id="image-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden z-50 transition-all">
+        <div class="relative max-w-sm w-full bg-white rounded-3xl overflow-hidden shadow-2xl">
+            <button onclick="closeImageModal()" class="absolute top-3 right-3 bg-black/50 hover:bg-black text-white w-9 h-9 rounded-full flex items-center justify-center font-bold text-base z-10 transition">✕</button>
+            <div class="w-full h-72 bg-gray-100 overflow-hidden">
+                <img id="modal-preview-img" src="" alt="Preview" class="w-full h-full object-cover">
+            </div>
+            <div class="p-4 bg-white">
+                <span id="modal-preview-cat" class="text-[10px] bg-rose-100 text-rose-600 font-bold px-2 py-0.5 rounded-full"></span>
+                <h3 id="modal-preview-title" class="font-extrabold text-gray-800 text-base mt-1"></h3>
+                <p id="modal-preview-price" class="text-rose-500 font-extrabold text-lg mt-0.5"></p>
+                <button id="modal-add-btn" class="mt-3 w-full bg-rose-500 hover:bg-rose-600 text-white py-2.5 rounded-2xl font-bold text-xs shadow-md transition active:scale-95 flex items-center justify-center gap-1.5">
+                    <span>बकेटमध्ये जोडा</span>
+                    <span>🛒</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Cart Bar -->
+    <div id="cart-bar" class="fixed bottom-4 left-4 right-4 max-w-md mx-auto hidden z-40">
+        <div class="bg-gray-900/95 backdrop-blur-lg text-white p-3.5 rounded-3xl shadow-2xl flex justify-between items-center cursor-pointer border border-white/10 active:scale-98 transition" onclick="openBucketModal()">
+            <div class="flex items-center gap-3">
+                <div class="bg-rose-500 text-white font-extrabold text-xs w-7 h-7 rounded-full flex items-center justify-center shadow" id="cart-count">0</div>
+                <div>
+                    <p class="text-[11px] text-gray-400 font-medium leading-none">एकूण बिल</p>
+                    <p class="font-bold text-base text-rose-400 leading-tight">₹ <span id="cart-total">0</span></p>
+                </div>
+            </div>
+            <div class="flex items-center gap-1.5 font-bold text-xs bg-rose-500 hover:bg-rose-600 px-4 py-2 rounded-2xl shadow transition">
+                <span>बकेट तपासा</span>
+                <span>🛒</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Bucket Modal -->
+    <div id="bucket-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden z-50">
+        <div class="bg-white w-full max-w-md rounded-t-[2.5rem] sm:rounded-3xl p-6 shadow-2xl max-h-[85vh] flex flex-col">
+            <div class="flex justify-between items-center border-b border-gray-100 pb-3 mb-3">
+                <h2 class="text-lg font-bold text-gray-800">तुमची बकेट 🍨</h2>
+                <button onclick="closeBucketModal()" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 font-bold flex items-center justify-center">✕</button>
+            </div>
+
+            <div id="cart-items-list" class="overflow-y-auto space-y-2.5 mb-4 flex-1 text-sm pr-1"></div>
+
+            <div class="border-t border-gray-100 pt-3 space-y-3">
+                <div class="flex justify-between items-center font-bold text-gray-800">
+                    <span class="text-sm">देय रक्कम:</span>
+                    <span class="text-rose-500 text-xl font-extrabold">₹ <span id="modal-cart-total">0</span></span>
+                </div>
+                <button onclick="openCheckout()" class="w-full bg-gradient-to-r from-emerald-500 to-green-600 text-white py-3.5 rounded-2xl font-bold hover:shadow-lg shadow-md text-sm transition">
+                    ग्राहकाची माहिती आणि शेरा भरा →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal (टेबल नंबर काढला आहे) -->
+    <div id="checkout-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl">
+            <h2 class="text-lg font-bold mb-3 text-gray-800">ऑर्डर माहिती</h2>
+            <input type="text" id="cust-name" placeholder="तुमचे नाव *" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl mb-3 text-sm focus:ring-2 focus:ring-rose-400 outline-none">
+            <textarea id="cust-remark" rows="2" placeholder="काही विशेष सूचना/शेरा? (उदा. पार्सल द्या, कमी गोड, जास्त चमचे इ.)" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl mb-3 text-xs focus:ring-2 focus:ring-rose-400 outline-none"></textarea>
+            
+            <div class="bg-amber-50 border border-amber-200 p-2.5 rounded-2xl mb-4 text-[11px] text-amber-900 leading-relaxed">
+                <p class="font-bold">💡 पेमेंट माहिती:</p>
+                <p>ऑर्डर दिल्यावर स्क्रीनवर दाखवलेल्या UPI वर पैसे पाठवून स्क्रीनशॉट पाठवा.</p>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="closeCheckout()" class="w-1/2 bg-gray-100 text-gray-600 py-3 rounded-xl font-semibold text-xs">मागे जा</button>
+                <button onclick="sendWhatsAppOrder()" class="w-1/2 bg-green-600 text-white py-3 rounded-xl font-bold text-xs shadow-md hover:bg-green-700 transition">WhatsApp वर पाठवा</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="max-w-md mx-auto px-4 mt-8 text-center text-xs text-gray-500 pb-12 border-t border-pink-100 pt-6">
+        <div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 p-4 rounded-3xl shadow-sm mb-5 text-center">
+            <p class="font-extrabold text-gray-800 text-sm mb-1">Carnival Ice Cream आवडले का? 🍨</p>
+            <p class="text-[11px] text-gray-600 mb-3">तुमचा अनमोल रिव्ह्यू आम्हाला गुगलवर नक्की द्या!</p>
+            <a href="https://share.google/nsYQ72VMPlfgXjMY6" target="_blank" class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 text-gray-900 px-5 py-2.5 rounded-2xl text-xs font-bold shadow-md hover:shadow-lg active:scale-95 transition">
+                <span>⭐ Google वर रिव्ह्यू द्या</span>
+            </a>
+        </div>
+
+        <h3 class="brand-font text-gray-800 text-base mb-0.5">Carnival Ice Cream</h3>
+        <p class="mb-3 text-[11px] font-semibold text-gray-600">भिलवडी (Bhilawadi) | संपर्क: +91 98602 71523</p>
+        
+        <div class="flex justify-center items-center gap-3 mb-4">
+            <a href="https://share.google/nsYQ72VMPlfgXjMY6" target="_blank" class="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold shadow-xs hover:bg-amber-500 hover:text-white transition" title="Google Listing">⭐</a>
+            <a href="https://instagram.com" target="_blank" class="w-8 h-8 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center font-bold shadow-xs hover:bg-pink-600 hover:text-white transition" title="Instagram">📸</a>
+            <a href="https://facebook.com" target="_blank" class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold shadow-xs hover:bg-blue-600 hover:text-white transition" title="Facebook">👍</a>
+            <a href="https://wa.me/919860271523" target="_blank" class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold shadow-xs hover:bg-emerald-600 hover:text-white transition" title="WhatsApp">💬</a>
+        </div>
+        <p class="text-[10px] text-gray-400">© 2026 Carnival Ice Cream, Bhilawadi.</p>
+    </footer>
+
+    <!-- Admin Panel Modal -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div id="admin-login-view">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-bold text-gray-800">व्यवस्थापक लॉगइन</h2>
+                    <button onclick="closeAdminModal()" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 font-bold flex items-center justify-center">✕</button>
+                </div>
+                <input type="password" id="admin-pass" placeholder="पासवर्ड टाका (डिफॉल्ट: 1234)" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl mb-3 text-sm">
+                <button onclick="checkAdminLogin()" class="w-full bg-rose-500 text-white py-3 rounded-xl font-bold text-sm shadow hover:bg-rose-600 transition">लॉगइन करा</button>
+            </div>
+
+            <div id="admin-dashboard-view" class="hidden">
+                <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
+                    <h2 class="text-base font-bold text-rose-500">⚙ नवीन पदार्थ जोडा</h2>
+                    <button onclick="closeAdminModal()" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 font-bold flex items-center justify-center">✕</button>
+                </div>
+
+                <div class="space-y-3 mb-6">
+                    <input type="text" id="new-name" placeholder="पदार्थाचे नाव (उदा. मलाई कुल्फी)" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-sm">
+                    <select id="new-category" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-sm">
+                        <option value="आईस्क्रीम">आईस्क्रीम</option>
+                        <option value="मिल्कशेख">मिल्कशेख</option>
+                        <option value="लस्सी">लस्सी</option>
+                        <option value="सोडा/कोल्डड्रिंक्स">सोडा/कोल्डड्रिंक्स</option>
+                    </select>
+                    <input type="number" id="new-price" placeholder="किंमत (₹)" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-sm">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">गॅलरीतून फोटो निवडा:</label>
+                        <input type="file" id="new-img-file" accept="image/*" class="w-full border border-gray-200 p-2 rounded-xl text-xs bg-gray-50">
+                    </div>
+                    <button onclick="addNewProduct()" class="w-full bg-rose-500 text-white py-3 rounded-xl font-bold text-sm shadow hover:bg-rose-600 transition">मेनूमध्ये जोडा</button>
+                </div>
+
+                <h3 class="font-bold text-gray-700 text-xs mb-2 uppercase tracking-wide">सध्या उपलब्ध असलेले पदार्थ:</h3>
+                <div id="admin-product-list" class="space-y-2 max-h-44 overflow-y-auto text-xs border border-gray-100 p-2 rounded-2xl bg-gray-50"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 3;
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            const track = document.getElementById('slider-track');
+            if (track) {
+                track.style.transform = `translateX(-${currentSlide * 100}%)`;
+                const dots = document.getElementById('slider-dots').children;
+                for (let i = 0; i < dots.length; i++) {
+                    dots[i].className = i === currentSlide ? 'w-2 h-2 rounded-full bg-white' : 'w-2 h-2 rounded-full bg-white/50';
+                }
+            }
+        }, 3500);
+
+        let defaultProducts = [
+            { name: 'रॉकी रोड स्कूप', category: 'आईस्क्रीम', price: 80, img: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80' },
+            { name: 'चॉकलेट संडे', category: 'आईस्क्रीम', price: 120, img: 'https://images.unsplash.com/photo-1557142046-c705a3adf35e?auto=format&fit=crop&w=600&q=80' },
+            { name: 'रोझ मिल्कशेख', category: 'मिल्कशेख', price: 90, img: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=600&q=80' },
+            { name: 'शाही मलाई लस्सी', category: 'लस्सी', price: 60, img: 'https://images.unsplash.com/photo-1541658016709-82535e94bc69?auto=format&fit=crop&w=600&q=80' },
+            { name: 'मँगो स्पेशल लस्सी', category: 'लस्सी', price: 75, img: 'https://images.unsplash.com/photo-1541658016709-82535e94bc69?auto=format&fit=crop&w=600&q=80' },
+            { name: 'फ्रेश लेमन सोडा', category: 'सोडा/कोल्डड्रिंक्स', price: 30, img: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80' }
+        ];
+
+        let products = JSON.parse(localStorage.getItem('carnival_products')) || defaultProducts;
+        let cart = [];
+        let currentCategory = 'सर्व';
+
+        function saveProducts() {
+            localStorage.setItem('carnival_products', JSON.stringify(products));
+            renderProducts(currentCategory);
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            let buttons = document.querySelectorAll('.cat-btn');
+            buttons.forEach(btn => {
+                if (btn.innerText.includes(cat) || (cat === 'सर्व' && btn.innerText.includes('सर्व'))) {
+                    btn.className = 'cat-btn bg-rose-500 text-white px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap shadow-md shadow-rose-200 transition';
+                } else {
+                    btn.className = 'cat-btn bg-white text-gray-700 px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap border border-pink-100 shadow-sm transition';
+                }
+            });
+            renderProducts(cat);
+        }
+
+        function renderProducts(category) {
+            let listHTML = '';
+            let filteredProducts = category === 'सर्व' ? products : products.filter(p => p.category === category);
+
+            if (filteredProducts.length === 0) {
+                document.getElementById('product-list').innerHTML = `<p class="col-span-2 text-center text-gray-400 py-10 text-xs">सध्या या प्रकारात कोणतेही पदार्थ उपलब्ध नाहीत.</p>`;
+                return;
+            }
+
+            filteredProducts.forEach((p) => {
+                let productJSON = encodeURIComponent(JSON.stringify(p));
+                listHTML += `
+                    <div class="bg-white p-3 rounded-3xl shadow-sm border border-pink-50 flex flex-col justify-between hover:shadow-md transition">
+                        <div>
+                            <div onclick="showFullImage('${productJSON}')" class="w-full h-28 rounded-2xl overflow-hidden mb-2.5 relative bg-pink-100 cursor-pointer group">
+                                <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                <span class="absolute top-2 left-2 text-[10px] bg-white/90 backdrop-blur-md text-rose-600 font-bold px-2 py-0.5 rounded-full shadow-sm">${p.category}</span>
+                                <span class="absolute bottom-1.5 right-1.5 bg-black/40 text-white text-[10px] px-1.5 py-0.5 rounded-md backdrop-blur-xs">🔍 पहा</span>
+                            </div>
+                            <h3 class="font-bold text-gray-800 text-xs leading-tight mb-1 line-clamp-1">${p.name}</h3>
+                            <p class="text-rose-500 font-extrabold text-sm">₹ ${p.price}</p>
+                        </div>
+                        <button onclick="addToCart('${p.name}', ${p.price})" class="mt-3 w-full bg-rose-50 text-rose-600 hover:bg-rose-500 hover:text-white py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1 active:scale-95">
+                            <span>+ जोडा</span>
+                        </button>
+                    </div>
+                `;
+            });
+            document.getElementById('product-list').innerHTML = listHTML;
+        }
+
+        function showFullImage(encodedProduct) {
+            let p = JSON.parse(decodeURIComponent(encodedProduct));
+            document.getElementById('modal-preview-img').src = p.img;
+            document.getElementById('modal-preview-title').innerText = p.name;
+            document.getElementById('modal-preview-cat').innerText = p.category;
+            document.getElementById('modal-preview-price').innerText = `₹ ${p.price}`;
+
+            let addBtn = document.getElementById('modal-add-btn');
+            addBtn.onclick = function() {
+                addToCart(p.name, p.price);
+                closeImageModal();
+            };
+
+            document.getElementById('image-modal').classList.remove('hidden');
+        }
+
+        function closeImageModal() {
+            document.getElementById('image-modal').classList.add('hidden');
+        }
+
+        function addToCart(name, price) {
+            let item = cart.find(i => i.name === name);
+            if (item) {
+                item.qty += 1;
+            } else {
+                cart.push({ name, price, qty: 1 });
+            }
+            updateCartUI();
+        }
+
+        function decreaseQuantity(name) {
+            let item = cart.find(i => i.name === name);
+            if (item) {
+                item.qty -= 1;
+                if (item.qty <= 0) {
+                    cart = cart.filter(i => i.name !== name);
+                }
+            }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            let count = cart.reduce((sum, i) => sum + i.qty, 0);
+            let total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+
+            document.getElementById('cart-count').innerText = count;
+            document.getElementById('cart-total').innerText = total;
+            document.getElementById('modal-cart-total').innerText = total;
+
+            let cartBar = document.getElementById('cart-bar');
+            let itemsContainer = document.getElementById('cart-items-list');
+            itemsContainer.innerHTML = '';
+
+            if (cart.length > 0) {
+                cartBar.classList.remove('hidden');
+                cart.forEach(i => {
+                    let div = document.createElement('div');
+                    div.className = 'flex justify-between items-center bg-gray-50 p-3 rounded-2xl border border-gray-100';
+                    div.innerHTML = `
+                        <div>
+                            <span class="text-gray-800 font-semibold text-xs">${i.name}</span>
+                            <div class="text-[11px] text-rose-500 font-bold">₹${i.price} × ${i.qty} = ₹${i.price * i.qty}</div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="decreaseQuantity('${i.name}')" class="bg-rose-100 text-rose-600 w-7 h-7 rounded-xl font-bold flex items-center justify-center text-sm">-</button>
+                            <span class="font-bold text-xs w-4 text-center">${i.qty}</span>
+                            <button onclick="addToCart('${i.name}', ${i.price})" class="bg-emerald-100 text-emerald-600 w-7 h-7 rounded-xl font-bold flex items-center justify-center text-sm">+</button>
+                        </div>
+                    `;
+                    itemsContainer.appendChild(div);
+                });
+            } else {
+                cartBar.classList.add('hidden');
+                closeBucketModal();
+            }
+        }
+
+        function openBucketModal() {
+            document.getElementById('bucket-modal').classList.remove('hidden');
+        }
+
+        function closeBucketModal() {
+            document.getElementById('bucket-modal').classList.add('hidden');
+        }
+
+        function openCheckout() {
+            closeBucketModal();
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+            openBucketModal();
+        }
+
+        // WhatsApp वर थेट 9860271523 वर मेसेज जाईल
+        function sendWhatsAppOrder() {
+            let name = document.getElementById('cust-name').value;
+            let remark = document.getElementById('cust-remark').value;
+
+            if (!name) {
+                alert('कृपया तुमचे नाव टाका!');
+                return;
+            }
+
+            let message = `*🍦 Carnival Ice Cream, Bhilawadi - नवीन ऑर्डर!* \n\n*ग्राहक:* ${name}\n`;
+            
+            if (remark && remark.trim() !== '') {
+                message += `*विशेष सूचना/शेरा:* _"${remark.trim()}"_\n`;
+            }
+
+            message += `\n*ऑर्डर तपशील:*\n`;
+            cart.forEach(i => {
+                message += `▪️ ${i.name} (${i.qty} नग) = ₹${i.price * i.qty}\n`;
+            });
+
+            let total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+            message += `\n*एकूण देय रक्कम: ₹ ${total}*\n\nकृपया ऑर्डर कन्फर्म करा!`;
+
+            let shopWhatsApp = "919860271523";
+            window.open(`https://wa.me/${shopWhatsApp}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function openAdminLogin() {
+            document.getElementById('admin-modal').classList.remove('hidden');
+            document.getElementById('admin-login-view').classList.remove('hidden');
+            document.getElementById('admin-dashboard-view').classList.add('hidden');
+            document.getElementById('admin-pass').value = '';
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').classList.add('hidden');
+        }
+
+        function checkAdminLogin() {
+            let pass = document.getElementById('admin-pass').value;
+            if (pass === '1234') {
+                document.getElementById('admin-login-view').classList.add('hidden');
+                document.getElementById('admin-dashboard-view').classList.remove('hidden');
+                renderAdminProductList();
+            } else {
+                alert('चुकीचा पासवर्ड!');
+            }
+        }
+
+        function addNewProduct() {
+            let name = document.getElementById('new-name').value;
+            let category = document.getElementById('new-category').value;
+            let price = Number(document.getElementById('new-price').value);
+            let fileInput = document.getElementById('new-img-file');
+
+            if (!name || !price) {
+                alert('कृपया नाव आणि किंमत टाका!');
+                return;
+            }
+
+            if (fileInput.files && fileInput.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    let imgData = e.target.result;
+                    products.push({ name, category, price, img: imgData });
+                    saveProducts();
+                    renderAdminProductList();
+                    resetAdminForm();
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                let fallbackImg = 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80';
+                products.push({ name, category, price, img: fallbackImg });
+                saveProducts();
+                renderAdminProductList();
+                resetAdminForm();
+            }
+        }
+
+        function resetAdminForm() {
+            document.getElementById('new-name').value = '';
+            document.getElementById('new-price').value = '';
+            document.getElementById('new-img-file').value = '';
+            alert('पदार्थ यशस्वीरित्या मेनूमध्ये जोडला गेला!');
+        }
+
+        function deleteProduct(index) {
+            if (confirm('हा पदार्थ मेनूमधून काढायचा आहे का?')) {
+                products.splice(index, 1);
+                saveProducts();
+                renderAdminProductList();
+            }
+        }
+
+        function renderAdminProductList() {
+            let adminListHTML = '';
+            products.forEach((p, index) => {
+                adminListHTML += `
+                    <div class="flex justify-between items-center bg-white p-2 rounded-xl shadow-xs border border-gray-100">
+                        <span class="font-medium text-gray-700">${p.name} (${p.category} - ₹${p.price})</span>
+                        <button onclick="deleteProduct(${index})" class="bg-rose-100 text-rose-600 px-2.5 py-1 rounded-lg font-bold hover:bg-rose-200 transition">काढा</button>
+                    </div>
+                `;
+            });
+            document.getElementById('admin-product-list').innerHTML = adminListHTML;
+        }
+
+        renderProducts('सर्व');
+    </script>
+</body>
+</html>

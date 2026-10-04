@@ -73,15 +73,20 @@ async function compressImage(file){
  try{
   const img=new Image();
   await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=url});
-  let maxSide=2600,w=img.naturalWidth,h=img.naturalHeight;
-  if(Math.max(w,h)>maxSide){const scale=maxSide/Math.max(w,h);w=Math.round(w*scale);h=Math.round(h*scale)}
+  let w=img.naturalWidth,h=img.naturalHeight;
+  const maxSide=2000;
+  if(Math.max(w,h)>maxSide){const s=maxSide/Math.max(w,h);w=Math.round(w*s);h=Math.round(h*s)}
   const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
-  let blob=null,quality=.9;
-  for(let pass=0;pass<12;pass++){
-   canvas.width=w;canvas.height=h;ctx.clearRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);
-   blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',quality));
-   if(blob&&blob.size<=4.7*1024*1024)break;
-   if(quality>.5)quality-=.06;else{w=Math.max(900,Math.round(w*.82));h=Math.max(900,Math.round(h*.82))}
+  canvas.width=w;canvas.height=h;ctx.drawImage(img,0,0,w,h);
+  let blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.94));
+  if(!blob||blob.size>5*1024*1024){
+   const s=Math.sqrt((4.8*1024*1024)/(blob?blob.size:6*1024*1024));
+   w=Math.max(1000,Math.round(w*s));h=Math.max(1000,Math.round(h*s));
+   canvas.width=w;canvas.height=h;ctx.drawImage(img,0,0,w,h);
+   blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.94));
+  }
+  if(!blob||blob.size>5*1024*1024){
+   blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.88));
   }
   if(!blob||blob.size>5*1024*1024)throw new Error('फोटो 5 MB च्या आत करता आला नाही.');
   return new File([blob],file.name.replace(/\\.[^.]+$/,'')+'.jpg',{type:'image/jpeg',lastModified:Date.now()});

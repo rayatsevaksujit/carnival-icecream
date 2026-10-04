@@ -24,9 +24,10 @@ button:active{transform:scale(0.98)}
 .banner-btn{width:100%;background:#f59e0b;color:#111;margin-top:10px;font-weight:800}
 .banner-btn:hover{background:#d97706}
 .hidden{display:none!important}
-.item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;background:#fafafa;border:1px solid #f1f5f9;border-radius:16px;margin-top:8px}
+.item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px;background:#fafafa;border:1px solid #f1f5f9;border-radius:16px;margin-top:8px}
 .item span{font-size:13px;font-weight:700;line-height:1.25}
-.del{background:#ffe4e6;color:#e11d48;padding:8px 12px;font-size:12px;border-radius:12px}
+.del{background:#ffe4e6;color:#e11d48;padding:7px 10px;font-size:12px;border-radius:12px}
+.edit-btn{background:#e0f2fe;color:#0284c7;padding:7px 10px;font-size:12px;border-radius:12px}
 .note{font-size:11px;color:#6b7280;line-height:1.5}
 .back{display:block;text-align:center;margin-top:14px;color:#e11d48;text-decoration:none;font-weight:800;font-size:13px}
 .photo-btn{border-radius:14px;padding:11px;text-align:center;cursor:pointer;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px}
@@ -34,6 +35,8 @@ button:active{transform:scale(0.98)}
 .banner-thumb-card{position:relative;border-radius:14px;overflow:hidden;border:1px solid #fed7aa;height:90px;background:#fff}
 .banner-thumb-card img{width:100%;height:100%;object-fit:cover}
 .banner-del-btn{position:absolute;top:4px;right:4px;background:#e11d48;color:#fff;border-radius:8px;padding:2px 7px;font-size:11px;font-weight:800}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:16px;z-index:999}
+.edost-footer{margin-top:20px;text-align:center;font-size:11px;color:#6b7280;font-weight:600;padding-top:12px;border-top:1px solid #fed7aa}
 </style>
 </head>
 <body>
@@ -52,6 +55,7 @@ button:active{transform:scale(0.98)}
     <p id="login-msg" class="note" style="color:#e11d48;text-align:center;margin-top:8px;margin-bottom:0"></p>
   </div>
   <a class="back" href="./index.html">← ग्राहक मेनूकडे जा</a>
+  <div class="edost-footer">✨ Developed by <span style="color:#e11d48;font-weight:800">eDost</span></div>
 </div>
 
 <!-- Dashboard View -->
@@ -61,10 +65,10 @@ button:active{transform:scale(0.98)}
     <div style="color:#fff1f2;font-weight:700;margin-top:5px">⚙️ Menu Management</div>
   </div>
 
-  <!-- बॅनर मॅनेजमेंट: फक्त फोटो अपलोड (१० किंवा अधिक फोटो साठवता येतात) -->
+  <!-- बॅनर व्यवस्थापन -->
   <div class="card" style="border: 2px solid #fde68a; background: #fffdfa;">
     <h2 style="margin:0; font-size: 16px; color: #b45309;">🎯 फिरणारे बॅनर फोटो जोडा (१०+ फोटो)</h2>
-    <p class="note">वेबसाईटवर वर फिरण्यासाठी दुकानाचे किंवा आईस्क्रीमचे फोटो निवडा.</p>
+    <p class="note">वेबसाईटवर फिरण्यासाठी दुकानाचे किंवा आईस्क्रीमचे फोटो निवडा.</p>
     
     <div style="margin-top: 10px;">
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
@@ -116,6 +120,7 @@ button:active{transform:scale(0.98)}
     <button class="primary" id="add-btn" onclick="addProduct()">मेनूमध्ये जोडा</button>
   </div>
 
+  <!-- उपलब्ध मेनू यादी -->
   <div class="card">
     <h3 style="margin:0 0 6px">सध्या उपलब्ध मेनू</h3>
     <div id="list">डेटा लोड होत आहे...</div>
@@ -123,6 +128,56 @@ button:active{transform:scale(0.98)}
 
   <button class="secondary" style="width:100%;margin-top:14px" onclick="logout()">लॉगआउट</button>
   <a class="back" href="./index.html">← ग्राहक मेनूकडे जा</a>
+  
+  <div class="edost-footer">✨ Developed by <span style="color:#e11d48;font-weight:800">eDost</span></div>
+</div>
+
+<!-- दुरुस्ती (Edit Product) Modal -->
+<div id="edit-modal" class="modal-overlay hidden">
+  <div class="card" style="width:100%;max-width:380px;margin-top:0;position:relative">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <h3 style="margin:0;font-size:16px;color:#0284c7">✏️ पदार्थ दुरुस्त करा</h3>
+      <button onclick="closeEditModal()" style="background:#f1f5f9;border-radius:50%;width:30px;height:30px;padding:0">✕</button>
+    </div>
+
+    <input type="hidden" id="edit-id">
+    <input type="hidden" id="edit-old-img">
+
+    <label class="note" style="font-weight:700">पदार्थाचे नाव:</label>
+    <input id="edit-name">
+
+    <label class="note" style="font-weight:700;display:block;margin-top:8px">वर्ग (Category):</label>
+    <select id="edit-cat">
+      <option value="आईस्क्रीम">आईस्क्रीम</option>
+      <option value="मिल्कशेख">मिल्कशेख</option>
+      <option value="लस्सी">लस्सी</option>
+      <option value="सोडा/कोल्डड्रिंक्स">सोडा/कोल्डड्रिंक्स</option>
+    </select>
+
+    <label class="note" style="font-weight:700;display:block;margin-top:8px">किंमत ₹:</label>
+    <input id="edit-price" type="number" min="1">
+
+    <label class="note" style="font-weight:700;display:block;margin-top:8px">सध्याचा फोटो:</label>
+    <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
+      <img id="edit-preview-img" style="width:50px;height:50px;object-fit:cover;border-radius:10px;border:1px solid #e2e8f0">
+      <span class="note">नवीन फोटो निवडल्यास हा बदलेल.</span>
+    </div>
+
+    <label class="note" style="font-weight:700;display:block;margin-top:10px">नवीन फोटो निवडा (नसल्यास जुनाच राहील):</label>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top:4px">
+      <label class="photo-btn" style="background: #e0f2fe; border: 1.5px dashed #0284c7; color: #0284c7;">
+        📷 नवीन फोटो
+        <input id="edit-camera" type="file" accept="image/*" capture="environment" style="display: none;" onchange="previewEditImage(this)">
+      </label>
+      <label class="photo-btn" style="background: #f0f9ff; border: 1.5px dashed #0284c7; color: #0284c7;">
+        📁 गॅलरी फोटो
+        <input id="edit-gallery" type="file" accept="image/*" style="display: none;" onchange="previewEditImage(this)">
+      </label>
+    </div>
+    <p id="edit-chosen-text" class="note" style="margin-top: 4px; color: #0284c7; font-weight: 700;"></p>
+
+    <button class="primary" id="save-edit-btn" style="background:#0284c7;margin-top:14px" onclick="saveProductUpdate()">बदल सेव्ह करा</button>
+  </div>
 </div>
 
 <!-- Firebase SDK -->
@@ -143,6 +198,8 @@ if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 const db = firebase.firestore();
+
+// ॲडमिन पासवर्ड
 const ADMIN_PASSWORD = "5751";
 const defaultImg = "https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80";
 
@@ -150,6 +207,8 @@ let unsubscribeProducts = null;
 let unsubscribeBanners = null;
 let selectedPhotoFile = null;
 let selectedBannerFile = null;
+let selectedEditFile = null;
+let currentProductsList = [];
 
 function login() {
     if (document.getElementById('pass').value === ADMIN_PASSWORD) {
@@ -185,7 +244,7 @@ function esc(v) {
     return String(v ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
 }
 
-// १. बॅनर यादी ऐकणे (कलेक्शन: 'banners_list')
+// १. बॅनर व्यवस्थापन
 function listenBanners() {
     if (unsubscribeBanners) unsubscribeBanners();
     unsubscribeBanners = db.collection('banners_list').orderBy('createdAt', 'desc').onSnapshot(s => {
@@ -251,11 +310,12 @@ async function delBanner(id) {
     }
 }
 
-// २. मेनू प्रॉडक्ट्स ऐकणे
+// २. मेनू यादी लोड करणे
 function listenProducts() {
     if (unsubscribeProducts) unsubscribeProducts();
     unsubscribeProducts = db.collection('products').orderBy('createdAt', 'desc').onSnapshot(s => {
-        renderProducts(s.docs.map(d => ({ id: d.id, ...d.data() })));
+        currentProductsList = s.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderProducts(currentProductsList);
     }, e => {
         document.getElementById('list').innerHTML = '<p class="note" style="color:#e11d48">मेनू लोड करता आला नाही.</p>';
     });
@@ -268,9 +328,87 @@ function renderProducts(products) {
                 <img src="${esc(p.img || defaultImg)}" style="width:46px;height:46px;object-fit:cover;border-radius:12px;background:#fce7f3">
                 <span>${esc(p.name)}<br><small style="color:#e11d48">₹${Number(p.price || 0)} · ${esc(p.category)}</small></span>
             </div>
-            <button class="del" onclick="delProduct('${esc(p.id)}')">काढा</button>
+            <div style="display:flex;gap:6px">
+                <button class="edit-btn" onclick="openEditModal('${esc(p.id)}')">✏️ बदला</button>
+                <button class="del" onclick="delProduct('${esc(p.id)}')">काढा</button>
+            </div>
         </div>
     `).join('') : '<p class="note">मेनूमध्ये अजून पदार्थ नाहीत.</p>';
+}
+
+// ३. पदार्थ दुरुस्ती (Edit Logic)
+function openEditModal(id) {
+    const p = currentProductsList.find(item => item.id === id);
+    if (!p) return;
+
+    document.getElementById('edit-id').value = p.id;
+    document.getElementById('edit-name').value = p.name || '';
+    document.getElementById('edit-cat').value = p.category || 'आईस्क्रीम';
+    document.getElementById('edit-price').value = p.price || '';
+    document.getElementById('edit-old-img').value = p.img || defaultImg;
+    document.getElementById('edit-preview-img').src = p.img || defaultImg;
+
+    document.getElementById('edit-camera').value = '';
+    document.getElementById('edit-gallery').value = '';
+    document.getElementById('edit-chosen-text').innerText = '';
+    selectedEditFile = null;
+
+    document.getElementById('edit-modal').classList.remove('hidden');
+}
+
+function closeEditModal() {
+    document.getElementById('edit-modal').classList.add('hidden');
+}
+
+function previewEditImage(input) {
+    if (input.files && input.files[0]) {
+        selectedEditFile = input.files[0];
+        document.getElementById('edit-chosen-text').innerText = "✓ नवीन फोटो निवडला आहे.";
+        const reader = new FileReader();
+        reader.onload = e => { document.getElementById('edit-preview-img').src = e.target.result; };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+async function saveProductUpdate() {
+    const id = document.getElementById('edit-id').value;
+    const name = document.getElementById('edit-name').value.trim();
+    const cat = document.getElementById('edit-cat').value;
+    const price = Number(document.getElementById('edit-price').value);
+    const oldImg = document.getElementById('edit-old-img').value;
+    const btn = document.getElementById('save-edit-btn');
+
+    if (!name || !price) {
+        alert('नाव आणि किंमत रिकामी ठेवू नका.');
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'अपडेट करत आहे...';
+
+    try {
+        let finalImg = oldImg;
+        if (selectedEditFile) {
+            btn.textContent = 'नवीन फोटो कॉम्प्रेस करत आहे...';
+            finalImg = await compressImage(selectedEditFile, 400, 0.6);
+        }
+
+        await db.collection('products').doc(id).update({
+            name: name,
+            category: cat,
+            price: price,
+            img: finalImg,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        alert('✅ पदार्थाची माहिती यशस्वीरित्या बदलली!');
+        closeEditModal();
+    } catch (e) {
+        alert('त्रुटी: ' + e.message);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'बदल सेव्ह करा';
+    }
 }
 
 async function delProduct(id) {

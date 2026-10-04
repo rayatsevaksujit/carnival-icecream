@@ -52,16 +52,24 @@ button{border:0;border-radius:15px;padding:12px 14px;font:700 14px Mukta,sans-se
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script>
 const firebaseConfig={apiKey:"AIzaSyD6v_dLIM5rBnBYmQL2rYMUH5v5686KKew",authDomain:"carnival-ice-cream.firebaseapp.com",projectId:"carnival-ice-cream",storageBucket:"carnival-ice-cream.firebasestorage.app",messagingSenderId:"865814345062",appId:"1:865814345062:web:b9483f4e3540ae4f6744a7",measurementId:"G-7HJJPNH63E"};
 firebase.initializeApp(firebaseConfig);
-const db=firebase.firestore(),storage=firebase.storage(),ADMIN_PASSWORD="1234";
+const db=firebase.firestore(),storage=firebase.storage(),auth=firebase.auth(),ADMIN_PASSWORD="1234";
+let authReady=null;
+function ensureFirebaseAuth(){
+ if(auth.currentUser)return Promise.resolve(auth.currentUser);
+ if(authReady)return authReady;
+ authReady=auth.signInAnonymously().then(r=>r.user).catch(e=>{authReady=null;throw e});
+ return authReady;
+}
 const defaultImg="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80";
 let unsubscribe=null;
 function login(){if(document.getElementById('pass').value===ADMIN_PASSWORD){sessionStorage.setItem('carnival_admin','1');showPanel()}else document.getElementById('login-msg').textContent='❌ पासवर्ड चुकीचा आहे.'}
 function logout(){sessionStorage.removeItem('carnival_admin');if(unsubscribe)unsubscribe();showLogin()}
 function showLogin(){document.getElementById('login').classList.remove('hidden');document.getElementById('panel').classList.add('hidden');document.getElementById('pass').value=''}
-function showPanel(){document.getElementById('login').classList.add('hidden');document.getElementById('panel').classList.remove('hidden');listenProducts()}
+function showPanel(){document.getElementById('login').classList.add('hidden');document.getElementById('panel').classList.remove('hidden');listenProducts();ensureFirebaseAuth().catch(e=>console.warn('Firebase Auth:',e))}
 function friendly(e){return e&&e.code==='permission-denied'?'Firebase Rules मुळे परवानगी मिळाली नाही.':(e&&e.message)||'काहीतरी चूक झाली.'}
 function listenProducts(){if(unsubscribe)unsubscribe();unsubscribe=db.collection('products').orderBy('createdAt','asc').onSnapshot(s=>render(s.docs.map(d=>({id:d.id,...d.data()}))),e=>{document.getElementById('list').innerHTML='<p class="note" style="color:#e11d48">मेनू वाचता आला नाही: '+friendly(e)+'</p>'})}
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
@@ -96,6 +104,7 @@ async function addProduct(){
  if(!name||!price){alert('नाव आणि किंमत भरा.');return}
  btn.disabled=true;
  try{
+  await ensureFirebaseAuth();
   let img=defaultImg,uploadFile=file;
   if(file){
    btn.textContent=file.size>5*1024*1024?'फोटो optimize करत आहे...':'फोटो upload करत आहे...';

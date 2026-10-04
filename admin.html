@@ -27,10 +27,9 @@ button{border:0;border-radius:15px;padding:12px 14px;font:700 14px Mukta,sans-se
   <div class="head"><div class="brand">Carnival Ice Cream</div><div style="color:#ffe4e6;font-weight:700;margin-top:5px">🔐 व्यवस्थापक विभाग</div></div>
   <div class="card">
     <h2 style="margin:0 0 4px">Admin Login</h2>
-    <p class="note">सुरक्षित Firebase Admin Login. तुमच्या Firebase Authentication मधील Email/Password account ने लॉगइन करा.</p>
-    <input id="email" type="email" placeholder="Admin ID / Email" autocomplete="username">
+    <p class="note">Admin विभागासाठी फक्त Password आवश्यक आहे.</p>
     <input id="pass" type="password" placeholder="Admin Password" autocomplete="current-password">
-    <button class="primary" id="login-btn" onclick="login()">Firebase Login करा</button>
+    <button class="primary" id="login-btn" onclick="login()">Login करा</button>
     <p id="login-msg" class="note" style="color:#e11d48;text-align:center;margin-bottom:0"></p>
   </div>
   <a class="back" href="./">← ग्राहक मेनूकडे जा</a>
@@ -43,7 +42,7 @@ button{border:0;border-radius:15px;padding:12px 14px;font:700 14px Mukta,sans-se
     <select id="cat"><option>आईस्क्रीम</option><option>मिल्कशेख</option><option>लस्सी</option><option>सोडा/कोल्डड्रिंक्स</option></select>
     <input id="price" type="number" min="1" placeholder="किंमत ₹">
     <input id="img" type="file" accept="image/*">
-    <p class="note">फोटो Firebase Storage मध्ये सुरक्षितपणे upload होईल. Storage/Firestore Rules authenticated Admin account साठी असाव्यात.</p>
+    <p class="note">फोटो Firebase Storage मध्ये upload होईल. Admin Login नंतर Firebase authenticated session वापरली जाते.</p>
     <button class="primary" id="add-btn" onclick="addProduct()">मेनूमध्ये जोडा</button>
   </div>
   <div class="card"><h3 style="margin:0 0 6px">सध्याचे पदार्थ</h3><p class="note">✏️ नाव, किंमत, category आणि फोटो दुरुस्त करता येईल.</p><div id="list"></div></div>
@@ -61,29 +60,31 @@ const db=firebase.firestore(),storage=firebase.storage(),auth=firebase.auth();
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 const defaultImg="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80";
 let unsubscribe=null,editingId=null,editingOldImg='',currentProducts=[];
+const ADMIN_PASSWORD_HASH="03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4";
+async function passwordHash(value){
+ const data=new TextEncoder().encode(value);
+ const hash=await crypto.subtle.digest('SHA-256',data);
+ return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
 async function login(){
- const email=document.getElementById('email').value.trim();
  const password=document.getElementById('pass').value;
  const msg=document.getElementById('login-msg');
  const btn=document.getElementById('login-btn');
- if(!email||!password){msg.textContent='❌ Email आणि Password भरा.';return}
+ if(!password){msg.textContent='❌ Password भरा.';return}
  btn.disabled=true;btn.textContent='लॉगइन होत आहे...';msg.textContent='';
  try{
-  await auth.signInWithEmailAndPassword(email,password);
+  const enteredHash=await passwordHash(password);
+  if(enteredHash!==ADMIN_PASSWORD_HASH){msg.textContent='❌ Password चुकीचा आहे.';return}
+  await auth.signInAnonymously();
   sessionStorage.setItem('carnival_admin','1');
   showPanel();
  }catch(e){
   const map={
-   'auth/invalid-credential':'❌ Email किंवा Password चुकीचा आहे.',
-   'auth/user-not-found':'❌ हा Admin account Firebase मध्ये नाही.',
-   'auth/wrong-password':'❌ Password चुकीचा आहे.',
-   'auth/invalid-email':'❌ Email योग्य पद्धतीने भरा.',
-   'auth/too-many-requests':'❌ खूप प्रयत्न झाले. थोड्या वेळाने पुन्हा प्रयत्न करा.',
-   'auth/operation-not-allowed':'❌ Firebase मध्ये Email/Password Sign-in ON करा.',
+   'auth/operation-not-allowed':'❌ Firebase Authentication मध्ये Anonymous Sign-in ON करा.',
    'auth/network-request-failed':'❌ नेटवर्क कनेक्शन तपासा.'
   };
   msg.textContent=map[e.code]||('❌ '+(e.message||'Login failed.'));
- }finally{btn.disabled=false;btn.textContent='Firebase Login करा'}
+ }finally{btn.disabled=false;btn.textContent='Login करा'}
 }
 function logout(){sessionStorage.removeItem('carnival_admin');if(unsubscribe)unsubscribe();auth.signOut();showLogin()}
 function showLogin(){

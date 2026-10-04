@@ -78,7 +78,7 @@
         </div>
     </header>
 
-    <!-- Auto-Sliding Image Banner (ॲडमिन पॅनलद्वारे अपडेट होतो) -->
+    <!-- Auto-Sliding Image Banner (ॲडमिन पॅनलवरून बदलता येतो) -->
     <div class="content-width px-4 mt-3">
         <div class="hero-banner relative w-full h-44 rounded-3xl overflow-hidden shadow-md bg-gray-200">
             <div id="slider-track" class="flex transition-transform duration-700 ease-out h-full">
@@ -175,7 +175,7 @@
         </div>
     </div>
 
-    <!-- Review Bucket Modal -->
+    <!-- Review Bucket Modal (थेट WhatsApp वर पाठवण्याचे बटण) -->
     <div id="bucket-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden z-50">
         <div class="bg-white w-full max-w-md rounded-t-[2.5rem] sm:rounded-3xl p-6 shadow-2xl max-h-[85vh] flex flex-col">
             <div class="flex justify-between items-center border-b border-gray-100 pb-3 mb-3">
@@ -190,24 +190,11 @@
                     <span class="text-sm">देय रक्कम:</span>
                     <span class="text-rose-500 text-xl font-extrabold">₹ <span id="modal-cart-total">0</span></span>
                 </div>
-                <button onclick="openCheckout()" class="w-full bg-gradient-to-r from-emerald-500 to-green-600 text-white py-3.5 rounded-2xl font-bold hover:shadow-lg shadow-md text-sm transition">
-                    ग्राहकाची माहिती आणि शेरा भरा →
+                <!-- थेट WhatsApp वर ऑर्डर पाठवणारे बटण -->
+                <button onclick="sendWhatsAppOrderDirectly()" class="w-full bg-gradient-to-r from-emerald-500 to-green-600 text-white py-3.5 rounded-2xl font-bold hover:shadow-lg shadow-md text-sm transition flex items-center justify-center gap-2 active:scale-95">
+                    <span>💬 WhatsApp वर थेट ऑर्डर पाठवा</span>
+                    <span>→</span>
                 </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Checkout Modal -->
-    <div id="checkout-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
-        <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl">
-            <h2 class="text-lg font-bold mb-1 text-gray-800">ऑर्डर माहिती</h2>
-            <p class="text-[11px] text-green-600 font-semibold mb-3">💬 ऑर्डर थेट दुकानाच्या WhatsApp वर पाठवली जाईल.</p>
-            <input type="text" id="cust-name" placeholder="तुमचे नाव *" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl mb-3 text-sm focus:ring-2 focus:ring-rose-400 outline-none">
-            <textarea id="cust-remark" rows="2" placeholder="काही विशेष सूचना? (उदा. पार्सल द्या, कमी गोड, जास्त चमचे इ.)" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl mb-3 text-xs focus:ring-2 focus:ring-rose-400 outline-none"></textarea>
-
-            <div class="flex gap-2">
-                <button onclick="closeCheckout()" class="w-1/2 bg-gray-100 text-gray-600 py-3 rounded-xl font-semibold text-xs">मागे जा</button>
-                <button onclick="sendWhatsAppOrder()" class="w-1/2 bg-green-600 text-white py-3 rounded-xl font-bold text-xs shadow-md hover:bg-green-700 transition flex items-center justify-center gap-1">💬 WhatsApp वर ऑर्डर</button>
             </div>
         </div>
     </div>
@@ -278,7 +265,7 @@
             document.getElementById('product-list').innerHTML = '<p class="col-span-2 text-center text-rose-500 py-10 text-xs">मेनू लोड करता आला नाही.</p>';
         });
 
-        // Firestore Real-Time Banners (ॲडमिन पॅनलद्वारे अपडेट केलेले बॅनर थेट लोड होतात)
+        // Firestore Real-Time Banners
         db.collection('banners').onSnapshot(snapshot => {
             snapshot.forEach(doc => {
                 const data = doc.data();
@@ -401,21 +388,9 @@
         }
         function openBucketModal() { document.getElementById('bucket-modal').classList.remove('hidden'); }
         function closeBucketModal() { document.getElementById('bucket-modal').classList.add('hidden'); }
-        function openCheckout() {
-            if (!cart.length) return;
-            closeBucketModal();
-            document.getElementById('checkout-modal').classList.remove('hidden');
-        }
-        function closeCheckout() {
-            document.getElementById('checkout-modal').classList.add('hidden');
-            openBucketModal();
-        }
 
-        // WhatsApp ऑर्डर पाठवणे (पेमेंट वगळून + इंस्टाग्राम लिंक + थँक्यू मेसेज)
-        function sendWhatsAppOrder() {
-            const name = document.getElementById('cust-name').value.trim();
-            const remark = document.getElementById('cust-remark').value.trim();
-            if (!name) { alert('कृपया तुमचे नाव टाका!'); return; }
+        // थेट WhatsApp वर ऑर्डर पाठवणे (कोणताही फॉर्म नाही)
+        function sendWhatsAppOrderDirectly() {
             if (!cart.length) { alert('कृपया आधी पदार्थ बकेटमध्ये जोडा.'); return; }
 
             const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
@@ -423,37 +398,28 @@
 
             let message = `*🍦 Carnival Ice Cream, Bhilawadi*\n`;
             message += `━━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `*नवीन ऑर्डर तपशील:*\n`;
-            message += `👤 *ग्राहक नाव:* ${name}\n`;
-            if (remark) message += `📝 *शेरा/सूचना:* _"${remark}"_\n`;
-            message += `━━━━━━━━━━━━━━━━━━━━━\n`;
+            message += `*नवीन ऑर्डर:*\n`;
             cart.forEach(i => { 
                 message += `▫️ ${i.name} (${i.qty} नग) = ₹${i.price * i.qty}\n`; 
             });
             message += `━━━━━━━━━━━━━━━━━━━━━\n`;
             message += `💰 *एकूण बिल रक्कम: ₹ ${total}*\n\n`;
-            message += `📸 *नवीन ऑफर्स व व्हरायटीसाठी आम्हाला Instagram वर नक्की फॉलो करा:*\n`;
+            message += `📸 *नवीन व्हरायटी पाहण्यासाठी आम्हाला Instagram वर फॉलो करा:*\n`;
             message += `👉 ${instaLink}\n\n`;
-            message += `🙏 *Carnival Ice Cream ची निवड केल्याबद्दल मनापासून धन्यवाद!*\n`;
+            message += `🙏 *Carnival Ice Cream ची निवड केल्याबद्दल धन्यवाद!*\n`;
             message += `कृपया ऑर्डर कन्फर्म करा!`;
 
             window.open(`https://wa.me/919860271523?text=${encodeURIComponent(message)}`, '_blank');
 
-            // ऑर्डर पूर्ण झाल्यावर बकेट रिकामी करणे
+            // ऑर्डर पाठवल्यावर बकेट रिकामी करून बंद करणे
             cart = [];
-            document.getElementById('cust-name').value = '';
-            document.getElementById('cust-remark').value = '';
-            closeCheckout();
             closeBucketModal();
             updateCartUI();
         }
 
         window.addEventListener('pageshow', function () {
             cart = [];
-            if(document.getElementById('cust-name')) document.getElementById('cust-name').value = '';
-            if(document.getElementById('cust-remark')) document.getElementById('cust-remark').value = '';
             closeBucketModal();
-            if(document.getElementById('checkout-modal')) document.getElementById('checkout-modal').classList.add('hidden');
             updateCartUI();
         });
     </script>

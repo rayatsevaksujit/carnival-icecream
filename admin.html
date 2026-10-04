@@ -74,19 +74,18 @@ async function compressImage(file){
   const img=new Image();
   await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=url});
   let w=img.naturalWidth,h=img.naturalHeight;
-  const maxSide=2000;
+  const maxSide=1800;
   if(Math.max(w,h)>maxSide){const s=maxSide/Math.max(w,h);w=Math.round(w*s);h=Math.round(h*s)}
-  const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
-  canvas.width=w;canvas.height=h;ctx.drawImage(img,0,0,w,h);
-  let blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.94));
-  if(!blob||blob.size>5*1024*1024){
-   const s=Math.sqrt((4.8*1024*1024)/(blob?blob.size:6*1024*1024));
+  const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+  const ctx=canvas.getContext('2d',{alpha:false});
+  ctx.drawImage(img,0,0,w,h);
+  let blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.92));
+  if(!blob)throw new Error('फोटो process करता आला नाही.');
+  if(blob.size>5*1024*1024){
+   const s=Math.sqrt((4.8*1024*1024)/blob.size);
    w=Math.max(1000,Math.round(w*s));h=Math.max(1000,Math.round(h*s));
    canvas.width=w;canvas.height=h;ctx.drawImage(img,0,0,w,h);
-   blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.94));
-  }
-  if(!blob||blob.size>5*1024*1024){
-   blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.88));
+   blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.9));
   }
   if(!blob||blob.size>5*1024*1024)throw new Error('फोटो 5 MB च्या आत करता आला नाही.');
   return new File([blob],file.name.replace(/\\.[^.]+$/,'')+'.jpg',{type:'image/jpeg',lastModified:Date.now()});
@@ -95,15 +94,40 @@ async function compressImage(file){
 async function addProduct(){
  const name=document.getElementById('name').value.trim(),cat=document.getElementById('cat').value,price=Number(document.getElementById('price').value),file=document.getElementById('img').files[0],btn=document.getElementById('add-btn');
  if(!name||!price){alert('नाव आणि किंमत भरा.');return}
- btn.disabled=true;btn.textContent=file&&file.size>5*1024*1024?'फोटोची साईज कमी करत आहे...':'जोडत आहे...';
+ btn.disabled=true;
  try{
   let img=defaultImg,uploadFile=file;
-  if(file){uploadFile=await compressImage(file);const safe=uploadFile.name.replace(/[^a-zA-Z0-9._-]/g,'_'),ref=storage.ref('products/'+Date.now()+'_'+safe),up=await ref.put(uploadFile);img=await up.ref.getDownloadURL()}
+  if(file){
+   btn.textContent=file.size>5*1024*1024?'फोटो optimize करत आहे...':'फोटो upload करत आहे...';
+   uploadFile=await compressImage(file);
+   const safe=uploadFile.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+   const ref=storage.ref('products/'+Date.now()+'_'+safe);
+   const task=ref.put(uploadFile,{contentType:'image/jpeg'});
+   await new Promise((resolve,reject)=>{
+    let timer=setTimeout(()=>{try{task.cancel()}catch(_){};reject(new Error('Firebase upload ला खूप वेळ लागत आहे. Storage Rules/नेटवर्क तपासा.'))},60000);
+    task.on(firebase.storage.TaskEvent.STATE_CHANGED,
+     s=>{const p=s.totalBytes?Math.round(s.bytesTransferred/s.totalBytes*100):0;btn.textContent='फोटो upload '+p+'%';},
+     e=>{clearTimeout(timer);reject(e)},
+     ()=>{clearTimeout(timer);resolve()}
+    );
+   });
+   img=await ref.getDownloadURL();
+  }
+  btn.textContent='मेनू save करत आहे...';
   await db.collection('products').add({name,category:cat,price,img,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
   document.getElementById('name').value='';document.getElementById('price').value='';document.getElementById('img').value='';
   alert('✅ पदार्थ Firebase मेनूमध्ये जोडला.')
- }catch(e){alert('पदार्थ जोडता आला नाही: '+friendly(e))}finally{btn.disabled=false;btn.textContent='मेनूमध्ये जोडा'}
+ }catch(e){
+  console.error('Menu upload error:',e);
+  const msg=e&&e.code==='storage/unauthorized'?'Firebase Storage Rules मध्ये upload परवानगी नाही.':
+   e&&e.code==='storage/unauthenticated'?'Firebase Storage Authentication आवश्यक आहे.':
+   e&&e.code==='storage/quota-exceeded'?'Firebase Storage quota/Blaze plan तपासा.':
+   e&&e.code==='storage/retry-limit-exceeded'?'Firebase upload retry limit झाला.':
+   (e&&e.message)||'काहीतरी चूक झाली.';
+  alert('❌ '+msg);
+ }finally{btn.disabled=false;btn.textContent='मेनूमध्ये जोडा'}
 }
+
 if(sessionStorage.getItem('carnival_admin')==='1')showPanel();else showLogin();
 </script>
 </body>

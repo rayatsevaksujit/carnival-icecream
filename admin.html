@@ -19,7 +19,7 @@ button{border:0;border-radius:15px;padding:12px 14px;font:700 14px Mukta,sans-se
 .primary{width:100%;background:#e11d48;color:#fff;margin-top:12px}.secondary{background:#f3f4f6;color:#4b5563}
 .hidden{display:none!important}.item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;background:#fafafa;border:1px solid #f1f5f9;border-radius:16px;margin-top:8px}
 .item span{font-size:13px;font-weight:700;line-height:1.25}.del{background:#ffe4e6;color:#e11d48;padding:8px 10px;font-size:12px}
-.note{font-size:11px;color:#6b7280;line-height:1.5}.back{display:block;text-align:center;margin-top:14px;color:#e11d48;text-decoration:none;font-weight:800;font-size:13px}
+.note{font-size:11px;color:#6b7280;line-height:1.5}.back{display:block;text-align:center;margin-top:14px;color:#e11d48;text-decoration:none;font-weight:800;font-size:13px}.actions{display:flex;gap:7px}.edit{background:#fef3c7;color:#92400e;padding:8px 10px;font-size:12px}.modal{position:fixed;inset:0;background:#0008;display:flex;align-items:flex-end;justify-content:center;padding:12px;z-index:20}.modalbox{width:100%;max-width:430px;background:#fff;border-radius:24px;padding:18px;box-shadow:0 20px 60px #0005}.modalbox h3{margin:0 0 4px}.modal-actions{display:flex;gap:8px}.modal-actions button{flex:1}
 </style>
 </head>
 <body>
@@ -28,7 +28,7 @@ button{border:0;border-radius:15px;padding:12px 14px;font:700 14px Mukta,sans-se
   <div class="card">
     <h2 style="margin:0 0 4px">Admin Login</h2>
     <p class="note">सुरक्षित Firebase Admin Login. तुमच्या Firebase Authentication मधील Email/Password account ने लॉगइन करा.</p>
-    <input id="email" type="email" placeholder="Admin Email" autocomplete="username">
+    <input id="email" type="email" placeholder="Admin ID / Email" autocomplete="username">
     <input id="pass" type="password" placeholder="Admin Password" autocomplete="current-password">
     <button class="primary" id="login-btn" onclick="login()">Firebase Login करा</button>
     <p id="login-msg" class="note" style="color:#e11d48;text-align:center;margin-bottom:0"></p>
@@ -46,8 +46,8 @@ button{border:0;border-radius:15px;padding:12px 14px;font:700 14px Mukta,sans-se
     <p class="note">फोटो Firebase Storage मध्ये सुरक्षितपणे upload होईल. Storage/Firestore Rules authenticated Admin account साठी असाव्यात.</p>
     <button class="primary" id="add-btn" onclick="addProduct()">मेनूमध्ये जोडा</button>
   </div>
-  <div class="card"><h3 style="margin:0 0 6px">सध्याचे पदार्थ</h3><div id="list"></div></div>
-  <button class="secondary" style="width:100%;margin-top:14px" onclick="logout()">लॉगआउट</button>
+  <div class="card"><h3 style="margin:0 0 6px">सध्याचे पदार्थ</h3><p class="note">✏️ नाव, किंमत, category आणि फोटो दुरुस्त करता येईल.</p><div id="list"></div></div>
+  <button class="secondary" style="width:100%;margin-top:14px" onclick="logout()">लॉगआउट</button><div id="edit-modal" class="modal hidden"><div class="modalbox"><h3>पदार्थ दुरुस्ती ✏️</h3><p class="note">नाव, category, किंमत किंवा नवीन फोटो निवडा.</p><input id="edit-name" placeholder="पदार्थाचे नाव"><select id="edit-cat"><option>आईस्क्रीम</option><option>मिल्कशेख</option><option>लस्सी</option><option>सोडा/कोल्डड्रिंक्स</option></select><input id="edit-price" type="number" min="1" placeholder="किंमत ₹"><input id="edit-img" type="file" accept="image/*"><p id="edit-msg" class="note"></p><div class="modal-actions"><button class="secondary" onclick="closeEdit()">रद्द करा</button><button class="primary" id="save-edit-btn" style="margin-top:0" onclick="saveEdit()">बदल जतन करा</button></div></div></div>
   <a class="back" href="./">← ग्राहक मेनूकडे जा</a>
 </div>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -60,7 +60,7 @@ firebase.initializeApp(firebaseConfig);
 const db=firebase.firestore(),storage=firebase.storage(),auth=firebase.auth();
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 const defaultImg="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80";
-let unsubscribe=null;
+let unsubscribe=null,editingId=null,editingOldImg='';
 async function login(){
  const email=document.getElementById('email').value.trim();
  const password=document.getElementById('pass').value;
@@ -100,7 +100,10 @@ function showPanel(){
 function friendly(e){return e&&e.code==='permission-denied'?'Firebase Rules मुळे परवानगी मिळाली नाही.':(e&&e.message)||'काहीतरी चूक झाली.'}
 function listenProducts(){if(unsubscribe)unsubscribe();unsubscribe=db.collection('products').orderBy('createdAt','asc').onSnapshot(s=>render(s.docs.map(d=>({id:d.id,...d.data()}))),e=>{document.getElementById('list').innerHTML='<p class="note" style="color:#e11d48">मेनू वाचता आला नाही: '+friendly(e)+'</p>'})}
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-function render(products){document.getElementById('list').innerHTML=products.length?products.map(p=>'<div class="item"><div style="display:flex;align-items:center;gap:10px;min-width:0"><img src="'+esc(p.img||defaultImg)+'" style="width:46px;height:46px;object-fit:cover;border-radius:12px;background:#fce7f3"><span>'+esc(p.name)+'<br><small style="color:#e11d48">₹'+Number(p.price||0)+' · '+esc(p.category)+'</small></span></div><button class="del" onclick="delProduct(\''+esc(p.id)+'\')">काढा</button></div>').join(''):'<p class="note">मेनूमध्ये अजून पदार्थ नाहीत.</p>'}
+function render(products){document.getElementById('list').innerHTML=products.length?products.map(p=>'<div class="item"><div style="display:flex;align-items:center;gap:10px;min-width:0"><img src="'+esc(p.img||defaultImg)+'" style="width:46px;height:46px;object-fit:cover;border-radius:12px;background:#fce7f3"><span>'+esc(p.name)+'<br><small style="color:#e11d48">₹'+Number(p.price||0)+' · '+esc(p.category)+'</small></span></div><div class="actions"><button class="edit" onclick="editProduct(\''+esc(p.id)+'\',\''+esc(p.name).replace(/'/g,'\\&#039;')+'\',\''+esc(p.category).replace(/'/g,'\\&#039;')+'\','+Number(p.price||0)+',\''+esc(p.img||'').replace(/'/g,'\\&#039;')+'\')">✏️ दुरुस्ती</button><button class="del" onclick="delProduct(\''+esc(p.id)+'\')">काढा</button></div></div>').join(''):'<p class="note">मेनूमध्ये अजून पदार्थ नाहीत.</p>'}
+function editProduct(id,name,cat,price,img){editingId=id;editingOldImg=img||'';document.getElementById('edit-name').value=name||'';document.getElementById('edit-cat').value=cat||'आईस्क्रीम';document.getElementById('edit-price').value=price||'';document.getElementById('edit-img').value='';document.getElementById('edit-msg').textContent='';document.getElementById('edit-modal').classList.remove('hidden')}
+function closeEdit(){document.getElementById('edit-modal').classList.add('hidden');editingId=null;editingOldImg=''}
+async function saveEdit(){if(!editingId)return;const name=document.getElementById('edit-name').value.trim(),cat=document.getElementById('edit-cat').value,price=Number(document.getElementById('edit-price').value),file=document.getElementById('edit-img').files[0],btn=document.getElementById('save-edit-btn'),msg=document.getElementById('edit-msg');if(!name||!price){msg.textContent='❌ नाव आणि किंमत भरा.';return}if(!auth.currentUser){msg.textContent='❌ पुन्हा Login करा.';return}btn.disabled=true;msg.textContent='बदल जतन होत आहेत...';try{let img=editingOldImg||defaultImg;if(file){msg.textContent=file.size>5*1024*1024?'फोटो optimize करत आहे...':'नवीन फोटो upload करत आहे...';const uploadFile=await compressImage(file),safe=uploadFile.name.replace(/[^a-zA-Z0-9._-]/g,'_'),ref=storage.ref('products/'+Date.now()+'_edit_'+safe),task=ref.put(uploadFile,{contentType:'image/jpeg'});await new Promise((resolve,reject)=>{let timer=setTimeout(()=>{try{task.cancel()}catch(_){};reject(new Error('Firebase upload ला खूप वेळ लागत आहे.'))},60000);task.on(firebase.storage.TaskEvent.STATE_CHANGED,s=>{const p=s.totalBytes?Math.round(s.bytesTransferred/s.totalBytes*100):0;msg.textContent='फोटो upload '+p+'%';},e=>{clearTimeout(timer);reject(e)},()=>{clearTimeout(timer);resolve()})});img=await ref.getDownloadURL()}msg.textContent='मेनू update करत आहे...';await db.collection('products').doc(editingId).update({name,category:cat,price,img});alert('✅ पदार्थाची दुरुस्ती जतन झाली.');closeEdit()}catch(e){console.error(e);msg.textContent='❌ '+friendly(e)}finally{btn.disabled=false;btn.textContent='बदल जतन करा'}}
 async function delProduct(id){if(!confirm('हा पदार्थ कायमचा काढायचा आहे का?'))return;try{await db.collection('products').doc(id).delete();alert('पदार्थ काढला.')}catch(e){alert('पदार्थ काढता आला नाही: '+friendly(e))}}
 async function compressImage(file){
  if(!file||file.size<=5*1024*1024)return file;

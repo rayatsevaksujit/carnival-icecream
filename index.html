@@ -6,7 +6,7 @@
     <title>Carnival Ice Cream, Bhilawadi - डिजिटल मेनू</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Marathi calligraphy + Mukta -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Mukta:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -37,40 +37,27 @@
         .category-inner { width: min(100%, 430px); margin: 0 auto; }
         .products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .product-card { min-width: 0; }
-        .product-card img { display: block; }
         .floating-cart { width: min(calc(100% - 1rem), 430px); left: 50%; right: auto; transform: translateX(-50%); padding-bottom: env(safe-area-inset-bottom); }
         @media (min-width: 600px) {
             body { max-width: 430px; margin: 0 auto; box-shadow: 0 0 45px rgba(0,0,0,.12); }
             .content-width, .category-inner { width: 100%; }
-            .products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .floating-cart { width: 420px; }
         }
         @media (max-width: 480px) {
             :root { --header-height: 108px; }
-            .mobile-header-inner { gap: 8px; }
-            .mobile-header-actions { flex-shrink: 0; }
             .hero-banner { height: 180px; }
             .products-grid { gap: 10px; }
             .product-card { padding: 10px; border-radius: 22px; }
             .product-card-image { height: 118px !important; }
             .floating-cart { width: calc(100% - 1rem); bottom: 8px; }
         }
-        @media (max-width: 360px) {
-            :root { --header-height: 116px; }
-            .hero-banner { height: 165px; }
-            .products-grid { grid-template-columns: 1fr; }
-            .mobile-header-actions a { display: none; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            * { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
-        }
     </style>
 </head>
 <body class="bg-[#FFF5F7] text-gray-800 pb-36">
 
-    <!-- Top Sticky Header -->
+    <!-- Top Header -->
     <header class="site-header bg-gradient-to-r from-rose-500 via-pink-500 to-amber-400 text-white pt-4 pb-4 px-4 shadow-lg sticky top-0 z-40">
-        <div class="content-width mobile-header-inner flex justify-between items-center">
+        <div class="content-width flex justify-between items-center">
             <div>
                 <span class="bg-white/20 backdrop-blur-md text-[10px] font-bold px-2 py-0.5 rounded-full border border-white/30 uppercase tracking-wider">🍦 १००% शुध्द & टेस्टी</span>
                 <h1 class="brand-font text-2xl font-bold tracking-tight drop-shadow-sm mt-0.5">Carnival Ice Cream</h1>
@@ -80,15 +67,18 @@
                     <span>↗</span>
                 </a>
             </div>
-            <div class="mobile-header-actions flex items-center gap-2">
+            <div class="flex items-center gap-2">
                 <a href="tel:+919860271523" class="bg-white/20 hover:bg-white/30 p-2.5 rounded-2xl backdrop-blur-md border border-white/30 text-white transition active:scale-95" title="कॉल करा">
                     📞
+                </a>
+                <a href="./admin.html" class="bg-white/20 hover:bg-white/30 p-2 rounded-2xl backdrop-blur-md border border-white/30 text-white transition active:scale-95 text-xs font-bold" title="व्यवस्थापक विभाग">
+                    ⚙️ ॲडमिन
                 </a>
             </div>
         </div>
     </header>
 
-    <!-- Auto-Sliding Image Banner -->
+    <!-- Auto-Sliding Image Banner (ॲडमिन पॅनलद्वारे अपडेट होतो) -->
     <div class="content-width px-4 mt-3">
         <div class="hero-banner relative w-full h-44 rounded-3xl overflow-hidden shadow-md bg-gray-200">
             <div id="slider-track" class="flex transition-transform duration-700 ease-out h-full">
@@ -144,7 +134,9 @@
 
     <!-- Main Products Grid -->
     <main class="content-width px-4 mt-2">
-        <div class="products-grid grid gap-3.5" id="product-list"></div>
+        <div class="products-grid grid gap-3.5" id="product-list">
+            <p class="col-span-2 text-center text-gray-400 py-10 text-xs">डेटा लोड होत आहे...</p>
+        </div>
     </main>
 
     <!-- Full Image Preview Modal -->
@@ -205,17 +197,13 @@
         </div>
     </div>
 
-    <!-- Checkout Modal (टेबल नंबर काढला आहे) -->
+    <!-- Checkout Modal -->
     <div id="checkout-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
         <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl">
-            <h2 class="text-lg font-bold mb-1 text-gray-800">ऑर्डर माहिती</h2><p class="text-[11px] text-green-600 font-semibold mb-3">💬 ऑर्डर थेट दुकानाच्या WhatsApp वर पाठवली जाईल.</p>
-            <input type="text" id="cust-name" autocomplete="off" placeholder="तुमचे नाव *" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl mb-3 text-sm focus:ring-2 focus:ring-rose-400 outline-none">
-            <textarea id="cust-remark" autocomplete="off" rows="2" placeholder="काही विशेष सूचना/शेरा? (उदा. पार्सल द्या, कमी गोड, जास्त चमचे इ.)" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl mb-3 text-xs focus:ring-2 focus:ring-rose-400 outline-none"></textarea>
-            
-            <div class="bg-amber-50 border border-amber-200 p-2.5 rounded-2xl mb-4 text-[11px] text-amber-900 leading-relaxed">
-                <p class="font-bold">💡 पेमेंट माहिती:</p>
-                <p>ऑर्डर दिल्यावर स्क्रीनवर दाखवलेल्या UPI वर पैसे पाठवून स्क्रीनशॉट पाठवा.</p>
-            </div>
+            <h2 class="text-lg font-bold mb-1 text-gray-800">ऑर्डर माहिती</h2>
+            <p class="text-[11px] text-green-600 font-semibold mb-3">💬 ऑर्डर थेट दुकानाच्या WhatsApp वर पाठवली जाईल.</p>
+            <input type="text" id="cust-name" placeholder="तुमचे नाव *" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl mb-3 text-sm focus:ring-2 focus:ring-rose-400 outline-none">
+            <textarea id="cust-remark" rows="2" placeholder="काही विशेष सूचना? (उदा. पार्सल द्या, कमी गोड, जास्त चमचे इ.)" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl mb-3 text-xs focus:ring-2 focus:ring-rose-400 outline-none"></textarea>
 
             <div class="flex gap-2">
                 <button onclick="closeCheckout()" class="w-1/2 bg-gray-100 text-gray-600 py-3 rounded-xl font-semibold text-xs">मागे जा</button>
@@ -240,23 +228,22 @@
         <div class="flex justify-center items-center gap-3 mb-4">
             <a href="https://share.google/nsYQ72VMPlfgXjMY6" target="_blank" class="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold shadow-xs hover:bg-amber-500 hover:text-white transition" title="Google Listing">⭐</a>
             <a href="https://www.instagram.com/carnival.ice_cream?stkn=NXZmeWE2MG0ybDAw" target="_blank" class="w-8 h-8 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center font-bold shadow-xs hover:bg-pink-600 hover:text-white transition" title="Instagram">📸</a>
-            <a href="https://facebook.com" target="_blank" class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold shadow-xs hover:bg-blue-600 hover:text-white transition" title="Facebook">👍</a>
             <a href="https://wa.me/919860271523" target="_blank" class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold shadow-xs hover:bg-emerald-600 hover:text-white transition" title="WhatsApp">💬</a>
         </div>
         <p class="text-[10px] text-gray-400">© 2026 Carnival Ice Cream, Bhilawadi.</p>
     </footer>
+
     <!-- Firebase + JavaScript Logic -->
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
     <script>
         const firebaseConfig = {
-            apiKey: "AIzaSyD6v_dLIM5rBnBYmQL2rYMUH5v5686KKew",
+            apiKey: "AIzaSyD6v_dLiM5rbNBYmQL2rYMUH5v56B6KKew",
             authDomain: "carnival-ice-cream.firebaseapp.com",
             projectId: "carnival-ice-cream",
             storageBucket: "carnival-ice-cream.firebasestorage.app",
             messagingSenderId: "865814345062",
-            appId: "1:865814345062:web:b9483f4e3540ae4f6744a7",
-            measurementId: "G-7HJJPNH63E"
+            appId: "1:865814345062:web:b9483f4e3540ae4f6744a7"
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
@@ -275,12 +262,41 @@
             }
         }, 3500);
 
-        // जुने टेस्ट मेनू काढले आहेत. आता फक्त Firebase मधील सध्याचा मेनू वापरला जाईल.
-        const defaultProducts = [];
-
-        let products = defaultProducts;
+        let products = [];
         let cart = [];
         let currentCategory = 'सर्व';
+
+        // Firestore Real-Time Products
+        db.collection("products").orderBy("createdAt", "desc").onSnapshot(snapshot => {
+            products = [];
+            snapshot.forEach(doc => {
+                products.push({ id: doc.id, ...doc.data() });
+            });
+            renderProducts(currentCategory);
+        }, error => {
+            console.error("Firestore read error:", error);
+            document.getElementById('product-list').innerHTML = '<p class="col-span-2 text-center text-rose-500 py-10 text-xs">मेनू लोड करता आला नाही.</p>';
+        });
+
+        // Firestore Real-Time Banners (ॲडमिन पॅनलद्वारे अपडेट केलेले बॅनर थेट लोड होतात)
+        db.collection('banners').onSnapshot(snapshot => {
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const slot = doc.id;
+                let slideIndex = slot === 'banner1' ? 0 : slot === 'banner2' ? 1 : 2;
+                const slides = document.querySelectorAll('#slider-track > div');
+                if (slides[slideIndex]) {
+                    if (data.img) {
+                        const imgTag = slides[slideIndex].querySelector('img');
+                        if (imgTag) imgTag.src = data.img;
+                    }
+                    if (data.text) {
+                        const spanTag = slides[slideIndex].querySelector('span');
+                        if (spanTag) spanTag.innerText = data.text;
+                    }
+                }
+            });
+        });
 
         function renderProducts(category) {
             let listHTML = '';
@@ -296,7 +312,7 @@
                 listHTML += `
                     <div class="product-card bg-white p-3 rounded-3xl shadow-sm border border-pink-50 flex flex-col justify-between hover:shadow-md transition">
                         <div>
-                            <div class="product-card-image" onclick="showFullImage('${productJSON}')" class="w-full h-28 rounded-2xl overflow-hidden mb-2.5 relative bg-pink-100 cursor-pointer group">
+                            <div class="product-card-image w-full h-28 rounded-2xl overflow-hidden mb-2.5 relative bg-pink-100 cursor-pointer group" onclick="showFullImage('${productJSON}')">
                                 <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                                 <span class="absolute top-2 left-2 text-[10px] bg-white/90 backdrop-blur-md text-rose-600 font-bold px-2 py-0.5 rounded-full shadow-sm">${p.category}</span>
                                 <span class="absolute bottom-1.5 right-1.5 bg-black/40 text-white text-[10px] px-1.5 py-0.5 rounded-md backdrop-blur-xs">🔍 पहा</span>
@@ -394,50 +410,51 @@
             document.getElementById('checkout-modal').classList.add('hidden');
             openBucketModal();
         }
+
+        // WhatsApp ऑर्डर पाठवणे (पेमेंट वगळून + इंस्टाग्राम लिंक + थँक्यू मेसेज)
         function sendWhatsAppOrder() {
             const name = document.getElementById('cust-name').value.trim();
             const remark = document.getElementById('cust-remark').value.trim();
             if (!name) { alert('कृपया तुमचे नाव टाका!'); return; }
             if (!cart.length) { alert('कृपया आधी पदार्थ बकेटमध्ये जोडा.'); return; }
 
-            let message = `*🍦 Carnival Ice Cream, Bhilawadi - नवीन ऑर्डर!*\n\n*ग्राहक:* ${name}\n`;
-            if (remark) message += `*विशेष सूचना/शेरा:* _"${remark}"_\n`;
-            message += '\n*ऑर्डर तपशील:*\n';
-            cart.forEach(i => { message += `▪️ ${i.name} (${i.qty} नग) = ₹${i.price * i.qty}\n`; });
             const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-            message += `\n*एकूण देय रक्कम: ₹ ${total}*\n\nकृपया ऑर्डर कन्फर्म करा!`;
+            const instaLink = "https://www.instagram.com/carnival.ice_cream?stkn=NXZmeWE2MG0ybDAw";
+
+            let message = `*🍦 Carnival Ice Cream, Bhilawadi*\n`;
+            message += `━━━━━━━━━━━━━━━━━━━━━\n`;
+            message += `*नवीन ऑर्डर तपशील:*\n`;
+            message += `👤 *ग्राहक नाव:* ${name}\n`;
+            if (remark) message += `📝 *शेरा/सूचना:* _"${remark}"_\n`;
+            message += `━━━━━━━━━━━━━━━━━━━━━\n`;
+            cart.forEach(i => { 
+                message += `▫️ ${i.name} (${i.qty} नग) = ₹${i.price * i.qty}\n`; 
+            });
+            message += `━━━━━━━━━━━━━━━━━━━━━\n`;
+            message += `💰 *एकूण बिल रक्कम: ₹ ${total}*\n\n`;
+            message += `📸 *नवीन ऑफर्स व व्हरायटीसाठी आम्हाला Instagram वर नक्की फॉलो करा:*\n`;
+            message += `👉 ${instaLink}\n\n`;
+            message += `🙏 *Carnival Ice Cream ची निवड केल्याबद्दल मनापासून धन्यवाद!*\n`;
+            message += `कृपया ऑर्डर कन्फर्म करा!`;
+
             window.open(`https://wa.me/919860271523?text=${encodeURIComponent(message)}`, '_blank');
-        }
 
-        // Firestore मधून मेनू real-time येतो. Firebase unavailable/empty असल्यास default menu दाखवला जातो.
-        db.collection('products').orderBy('createdAt', 'asc').onSnapshot(snapshot => {
-            if (snapshot.empty) {
-                products = defaultProducts;
-                renderProducts(currentCategory);
-                return;
-            }
-            products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            renderProducts(currentCategory);
-        }, error => {
-            console.warn('Firestore menu read failed:', error);
-            products = defaultProducts;
-            renderProducts(currentCategory);
-        });
-
-        renderProducts('सर्व');
-
-        // मागील browser history/bfcache मधील जुना customer data ठेवू नका.
-        // प्रत्येक नवीन visit/back-forward वेळी bucket आणि checkout fields स्वच्छ राहतील.
-        function clearOldSessionData() {
+            // ऑर्डर पूर्ण झाल्यावर बकेट रिकामी करणे
             cart = [];
             document.getElementById('cust-name').value = '';
             document.getElementById('cust-remark').value = '';
-            closeBucketModal();
             closeCheckout();
+            closeBucketModal();
             updateCartUI();
         }
+
         window.addEventListener('pageshow', function () {
-            clearOldSessionData();
+            cart = [];
+            if(document.getElementById('cust-name')) document.getElementById('cust-name').value = '';
+            if(document.getElementById('cust-remark')) document.getElementById('cust-remark').value = '';
+            closeBucketModal();
+            if(document.getElementById('checkout-modal')) document.getElementById('checkout-modal').classList.add('hidden');
+            updateCartUI();
         });
     </script>
 </body>

@@ -245,8 +245,22 @@
         </div>
         <p class="text-[10px] text-gray-400">© 2026 Carnival Ice Cream, Bhilawadi.</p>
     </footer>
-    <!-- JavaScript Logic -->
+    <!-- Firebase + JavaScript Logic -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
     <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyD6v_dLIM5rBnBYmQL2rYMUH5v5686KKew",
+            authDomain: "carnival-ice-cream.firebaseapp.com",
+            projectId: "carnival-ice-cream",
+            storageBucket: "carnival-ice-cream.firebasestorage.app",
+            messagingSenderId: "865814345062",
+            appId: "1:865814345062:web:b9483f4e3540ae4f6744a7",
+            measurementId: "G-7HJJPNH63E"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
         let currentSlide = 0;
         const totalSlides = 3;
         setInterval(() => {
@@ -261,7 +275,7 @@
             }
         }, 3500);
 
-        let defaultProducts = [
+        const defaultProducts = [
             { name: 'रॉकी रोड स्कूप', category: 'आईस्क्रीम', price: 80, img: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80' },
             { name: 'चॉकलेट संडे', category: 'आईस्क्रीम', price: 120, img: 'https://images.unsplash.com/photo-1557142046-c705a3adf35e?auto=format&fit=crop&w=600&q=80' },
             { name: 'रोझ मिल्कशेख', category: 'मिल्कशेख', price: 90, img: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=600&q=80' },
@@ -270,34 +284,16 @@
             { name: 'फ्रेश लेमन सोडा', category: 'सोडा/कोल्डड्रिंक्स', price: 30, img: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80' }
         ];
 
-        let products = JSON.parse(localStorage.getItem('carnival_products')) || defaultProducts;
+        let products = defaultProducts;
         let cart = [];
         let currentCategory = 'सर्व';
-
-        function saveProducts() {
-            localStorage.setItem('carnival_products', JSON.stringify(products));
-            renderProducts(currentCategory);
-        }
-
-        function filterCategory(cat) {
-            currentCategory = cat;
-            let buttons = document.querySelectorAll('.cat-btn');
-            buttons.forEach(btn => {
-                if (btn.innerText.includes(cat) || (cat === 'सर्व' && btn.innerText.includes('सर्व'))) {
-                    btn.className = 'cat-btn bg-rose-500 text-white px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap shadow-md shadow-rose-200 transition';
-                } else {
-                    btn.className = 'cat-btn bg-white text-gray-700 px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap border border-pink-100 shadow-sm transition';
-                }
-            });
-            renderProducts(cat);
-        }
 
         function renderProducts(category) {
             let listHTML = '';
             let filteredProducts = category === 'सर्व' ? products : products.filter(p => p.category === category);
 
             if (filteredProducts.length === 0) {
-                document.getElementById('product-list').innerHTML = `<p class="col-span-2 text-center text-gray-400 py-10 text-xs">सध्या या प्रकारात कोणतेही पदार्थ उपलब्ध नाहीत.</p>`;
+                document.getElementById('product-list').innerHTML = '<p class="col-span-2 text-center text-gray-400 py-10 text-xs">सध्या या प्रकारात कोणतेही पदार्थ उपलब्ध नाहीत.</p>';
                 return;
             }
 
@@ -314,7 +310,7 @@
                             <h3 class="font-bold text-gray-800 text-xs leading-tight mb-1 line-clamp-1">${p.name}</h3>
                             <p class="text-rose-500 font-extrabold text-sm">₹ ${p.price}</p>
                         </div>
-                        <button onclick="addToCart('${p.name}', ${p.price})" class="mt-3 w-full bg-rose-50 text-rose-600 hover:bg-rose-500 hover:text-white py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1 active:scale-95">
+                        <button onclick="addToCart('${String(p.name).replace(/'/g, "\\'")}', ${p.price})" class="mt-3 w-full bg-rose-50 text-rose-600 hover:bg-rose-500 hover:text-white py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1 active:scale-95">
                             <span>+ जोडा</span>
                         </button>
                     </div>
@@ -323,63 +319,58 @@
             document.getElementById('product-list').innerHTML = listHTML;
         }
 
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.className = (btn.innerText.includes(cat) || (cat === 'सर्व' && btn.innerText.includes('सर्व')))
+                    ? 'cat-btn bg-rose-500 text-white px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap shadow-md shadow-rose-200 transition'
+                    : 'cat-btn bg-white text-gray-700 px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap border border-pink-100 shadow-sm transition';
+            });
+            renderProducts(cat);
+        }
+
         function showFullImage(encodedProduct) {
-            let p = JSON.parse(decodeURIComponent(encodedProduct));
+            const p = JSON.parse(decodeURIComponent(encodedProduct));
             document.getElementById('modal-preview-img').src = p.img;
             document.getElementById('modal-preview-title').innerText = p.name;
             document.getElementById('modal-preview-cat').innerText = p.category;
             document.getElementById('modal-preview-price').innerText = `₹ ${p.price}`;
-
-            let addBtn = document.getElementById('modal-add-btn');
-            addBtn.onclick = function() {
+            document.getElementById('modal-add-btn').onclick = function() {
                 addToCart(p.name, p.price);
                 closeImageModal();
             };
-
             document.getElementById('image-modal').classList.remove('hidden');
         }
-
-        function closeImageModal() {
-            document.getElementById('image-modal').classList.add('hidden');
-        }
+        function closeImageModal() { document.getElementById('image-modal').classList.add('hidden'); }
 
         function addToCart(name, price) {
-            let item = cart.find(i => i.name === name);
-            if (item) {
-                item.qty += 1;
-            } else {
-                cart.push({ name, price, qty: 1 });
-            }
+            const item = cart.find(i => i.name === name);
+            if (item) item.qty += 1;
+            else cart.push({ name, price, qty: 1 });
             updateCartUI();
         }
-
         function decreaseQuantity(name) {
-            let item = cart.find(i => i.name === name);
+            const item = cart.find(i => i.name === name);
             if (item) {
                 item.qty -= 1;
-                if (item.qty <= 0) {
-                    cart = cart.filter(i => i.name !== name);
-                }
+                if (item.qty <= 0) cart = cart.filter(i => i.name !== name);
             }
             updateCartUI();
         }
-
         function updateCartUI() {
-            let count = cart.reduce((sum, i) => sum + i.qty, 0);
-            let total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-
+            const count = cart.reduce((sum, i) => sum + i.qty, 0);
+            const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
             document.getElementById('cart-count').innerText = count;
             document.getElementById('cart-total').innerText = total;
             document.getElementById('modal-cart-total').innerText = total;
-
-            let cartBar = document.getElementById('cart-bar');
-            let itemsContainer = document.getElementById('cart-items-list');
+            const cartBar = document.getElementById('cart-bar');
+            const itemsContainer = document.getElementById('cart-items-list');
             itemsContainer.innerHTML = '';
 
             if (cart.length > 0) {
                 cartBar.classList.remove('hidden');
                 cart.forEach(i => {
-                    let div = document.createElement('div');
+                    const div = document.createElement('div');
                     div.className = 'flex justify-between items-center bg-gray-50 p-3 rounded-2xl border border-gray-100';
                     div.innerHTML = `
                         <div>
@@ -387,11 +378,10 @@
                             <div class="text-[11px] text-rose-500 font-bold">₹${i.price} × ${i.qty} = ₹${i.price * i.qty}</div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button onclick="decreaseQuantity('${i.name}')" class="bg-rose-100 text-rose-600 w-7 h-7 rounded-xl font-bold flex items-center justify-center text-sm">-</button>
+                            <button onclick="decreaseQuantity('${String(i.name).replace(/'/g, "\\'")}')" class="bg-rose-100 text-rose-600 w-7 h-7 rounded-xl font-bold">-</button>
                             <span class="font-bold text-xs w-4 text-center">${i.qty}</span>
-                            <button onclick="addToCart('${i.name}', ${i.price})" class="bg-emerald-100 text-emerald-600 w-7 h-7 rounded-xl font-bold flex items-center justify-center text-sm">+</button>
-                        </div>
-                    `;
+                            <button onclick="addToCart('${String(i.name).replace(/'/g, "\\'")}', ${i.price})" class="bg-emerald-100 text-emerald-600 w-7 h-7 rounded-xl font-bold">+</button>
+                        </div>`;
                     itemsContainer.appendChild(div);
                 });
             } else {
@@ -399,54 +389,46 @@
                 closeBucketModal();
             }
         }
-
-        function openBucketModal() {
-            document.getElementById('bucket-modal').classList.remove('hidden');
-        }
-
-        function closeBucketModal() {
-            document.getElementById('bucket-modal').classList.add('hidden');
-        }
-
+        function openBucketModal() { document.getElementById('bucket-modal').classList.remove('hidden'); }
+        function closeBucketModal() { document.getElementById('bucket-modal').classList.add('hidden'); }
         function openCheckout() {
+            if (!cart.length) return;
             closeBucketModal();
             document.getElementById('checkout-modal').classList.remove('hidden');
         }
-
         function closeCheckout() {
             document.getElementById('checkout-modal').classList.add('hidden');
             openBucketModal();
         }
-
-        // WhatsApp वर थेट 9860271523 वर मेसेज जाईल
         function sendWhatsAppOrder() {
-            let name = document.getElementById('cust-name').value;
-            let remark = document.getElementById('cust-remark').value;
+            const name = document.getElementById('cust-name').value.trim();
+            const remark = document.getElementById('cust-remark').value.trim();
+            if (!name) { alert('कृपया तुमचे नाव टाका!'); return; }
+            if (!cart.length) { alert('कृपया आधी पदार्थ बकेटमध्ये जोडा.'); return; }
 
-            if (!name) {
-                alert('कृपया तुमचे नाव टाका!');
+            let message = `*🍦 Carnival Ice Cream, Bhilawadi - नवीन ऑर्डर!*\n\n*ग्राहक:* ${name}\n`;
+            if (remark) message += `*विशेष सूचना/शेरा:* _"${remark}"_\n`;
+            message += '\n*ऑर्डर तपशील:*\n';
+            cart.forEach(i => { message += `▪️ ${i.name} (${i.qty} नग) = ₹${i.price * i.qty}\n`; });
+            const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+            message += `\n*एकूण देय रक्कम: ₹ ${total}*\n\nकृपया ऑर्डर कन्फर्म करा!`;
+            window.open(`https://wa.me/919860271523?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        // Firestore मधून मेनू real-time येतो. Firebase unavailable/empty असल्यास default menu दाखवला जातो.
+        db.collection('products').orderBy('createdAt', 'asc').onSnapshot(snapshot => {
+            if (snapshot.empty) {
+                products = defaultProducts;
+                renderProducts(currentCategory);
                 return;
             }
-
-            let message = `*🍦 Carnival Ice Cream, Bhilawadi - नवीन ऑर्डर!* \n\n*ग्राहक:* ${name}\n`;
-            
-            if (remark && remark.trim() !== '') {
-                message += `*विशेष सूचना/शेरा:* _"${remark.trim()}"_\n`;
-            }
-
-            message += `\n*ऑर्डर तपशील:*\n`;
-            cart.forEach(i => {
-                message += `▪️ ${i.name} (${i.qty} नग) = ₹${i.price * i.qty}\n`;
-            });
-
-            let total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-            message += `\n*एकूण देय रक्कम: ₹ ${total}*\n\nकृपया ऑर्डर कन्फर्म करा!`;
-
-            let shopWhatsApp = "919860271523";
-            window.open(`https://wa.me/${shopWhatsApp}?text=${encodeURIComponent(message)}`, '_blank');
-        });
-            document.getElementById('admin-product-list').innerHTML = adminListHTML;
-        }
+            products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderProducts(currentCategory);
+        }, error => {
+            console.warn('Firestore menu read failed:', error);
+            products = defaultProducts;
+            renderProducts(currentCategory);
+        });
 
         renderProducts('सर्व');
     </script>

@@ -65,27 +65,145 @@ button{border:0;border-radius:15px;padding:12px 14px;font:700 14px Mukta,sans-se
   <a class="back" href="./">← ग्राहक मेनूकडे जा</a>
 </div>
 
+<div id="login" class="wrap">
+  <div class="head">
+    <div class="brand">Carnival Ice Cream</div>
+    <div style="color:#ffe4e6;font-weight:700;margin-top:5px">🔐 व्यवस्थापक विभाग</div>
+  </div>
+  <div class="card">
+    <h2 style="margin:0 0 4px">Admin Login</h2>
+    <p class="note">Firebase सुरक्षित Login वापरले आहे. ग्राहकांच्या पेजवर ही लिंक दिसत नाही.</p>
+    <input id="email" type="email" placeholder="Admin ईमेल">
+    <input id="pass" type="password" placeholder="Admin पासवर्ड">
+    <button class="primary" onclick="login()">लॉगइन करा</button>
+  </div>
+  <a class="back" href="./">← ग्राहक मेनूकडे जा</a>
+</div>
+
+<div id="panel" class="wrap hidden">
+  <div class="head">
+    <div class="brand">Carnival Ice Cream</div>
+    <div style="color:#fff1f2;font-weight:700;margin-top:5px">⚙️ Firebase Menu Management</div>
+  </div>
+  <div class="card">
+    <h2 style="margin:0">नवीन पदार्थ जोडा 🍨</h2>
+    <input id="name" placeholder="पदार्थाचे नाव">
+    <select id="cat"><option>आईस्क्रीम</option><option>मिल्कशेख</option><option>लस्सी</option><option>सोडा/कोल्डड्रिंक्स</option></select>
+    <input id="price" type="number" min="1" placeholder="किंमत ₹">
+    <input id="img" type="file" accept="image/*">
+    <p class="note">फोटो दिल्यास तो Firebase Storage मध्ये सुरक्षितपणे साठवला जाईल.</p>
+    <button class="primary" onclick="addProduct()">मेनूमध्ये जोडा</button>
+  </div>
+  <div class="card">
+    <h3 style="margin:0 0 6px">सध्याचे पदार्थ</h3>
+    <div id="list"></div>
+  </div>
+  <button class="secondary" style="width:100%;margin-top:14px" onclick="logout()">लॉगआउट</button>
+  <a class="back" href="./">← ग्राहक मेनूकडे जा</a>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
 <script>
-const defaultProducts=[
+const firebaseConfig = {
+  apiKey: "AIzaSyD6v_dLIM5rBnBYmQL2rYMUH5v5686KKew",
+  authDomain: "carnival-ice-cream.firebaseapp.com",
+  projectId: "carnival-ice-cream",
+  storageBucket: "carnival-ice-cream.firebasestorage.app",
+  messagingSenderId: "865814345062",
+  appId: "1:865814345062:web:b9483f4e3540ae4f6744a7",
+  measurementId: "G-7HJJPNH63E"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const storage = firebase.storage();
+
+const defaultProducts = [
 {name:'रॉकी रोड स्कूप',category:'आईस्क्रीम',price:80,img:'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80'},
 {name:'चॉकलेट संडे',category:'आईस्क्रीम',price:120,img:'https://images.unsplash.com/photo-1557142046-c705a3adf35e?auto=format&fit=crop&w=600&q=80'},
 {name:'रोझ मिल्कशेख',category:'मिल्कशेख',price:90,img:'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=600&q=80'},
 {name:'शाही मलाई लस्सी',category:'लस्सी',price:60,img:'https://images.unsplash.com/photo-1541658016709-82535e94bc69?auto=format&fit=crop&w=600&q=80'},
 {name:'मँगो स्पेशल लस्सी',category:'लस्सी',price:75,img:'https://images.unsplash.com/photo-1541658016709-82535e94bc69?auto=format&fit=crop&w=600&q=80'},
 {name:'फ्रेश लेमन सोडा',category:'सोडा/कोल्डड्रिंक्स',price:30,img:'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80'}];
-let products=JSON.parse(localStorage.getItem('carnival_products'))||defaultProducts;
-function login(){if(document.getElementById('pass').value==='1234'){sessionStorage.setItem('carnival_admin','1');showPanel()}else alert('चुकीचा पासवर्ड!')}
-function showPanel(){document.getElementById('login').classList.add('hidden');document.getElementById('panel').classList.remove('hidden');render()}
-function logout(){sessionStorage.removeItem('carnival_admin');location.reload()}
-function render(){document.getElementById('list').innerHTML=products.length?products.map((p,i)=>'<div class="item"><span>'+p.name+'<br>₹'+p.price+' · '+p.category+'</span><button class="del" onclick="del('+i+')">काढा</button></div>').join(''):'<p class="note">अजून पदार्थ नाहीत.</p>'}
-function del(i){if(confirm('हा पदार्थ काढायचा आहे का?')){products.splice(i,1);localStorage.setItem('carnival_products',JSON.stringify(products));render()}}
-function addProduct(){
- const name=document.getElementById('name').value.trim(),cat=document.getElementById('cat').value,price=Number(document.getElementById('price').value),file=document.getElementById('img').files[0];
- if(!name||!price){alert('नाव आणि किंमत भरा.');return}
- const save=img=>{products.push({name,category:cat,price,img});localStorage.setItem('carnival_products',JSON.stringify(products));document.getElementById('name').value='';document.getElementById('price').value='';document.getElementById('img').value='';render();alert('पदार्थ मेनूमध्ये जोडला.')}
- if(file){const r=new FileReader();r.onload=e=>save(e.target.result);r.readAsDataURL(file)}else save(defaultProducts[0].img)
+
+let unsubscribe = null;
+
+function showLogin(){document.getElementById('login').classList.remove('hidden');document.getElementById('panel').classList.add('hidden');}
+function showPanel(){document.getElementById('login').classList.add('hidden');document.getElementById('panel').classList.remove('hidden');listenProducts();}
+function friendlyError(e){
+  if(e && e.code==='auth/invalid-credential') return 'ईमेल किंवा पासवर्ड चुकीचा आहे.';
+  if(e && e.code==='auth/too-many-requests') return 'खूप प्रयत्न झाले. थोड्या वेळाने पुन्हा प्रयत्न करा.';
+  if(e && e.code==='permission-denied') return 'Firebase Rules मुळे परवानगी मिळाली नाही.';
+  return (e && e.message) ? e.message : 'काहीतरी चूक झाली.';
 }
-if(sessionStorage.getItem('carnival_admin')==='1')showPanel();
+async function login(){
+  const email=document.getElementById('email').value.trim();
+  const pass=document.getElementById('pass').value;
+  if(!email||!pass){alert('Admin ईमेल आणि पासवर्ड भरा.');return;}
+  try{await auth.signInWithEmailAndPassword(email,pass);showPanel();}
+  catch(e){alert(friendlyError(e));}
+}
+async function logout(){await auth.signOut();showLogin();}
+function listenProducts(){
+  if(unsubscribe) unsubscribe();
+  unsubscribe=db.collection('products').orderBy('createdAt','asc').onSnapshot(s=>{
+    const products=s.docs.map(d=>({id:d.id,...d.data()}));
+    render(products);
+  },e=>alert('मेनू वाचता आला नाही: '+friendlyError(e)));
+}
+function render(products){
+  document.getElementById('list').innerHTML=products.length?products.map(p=>`
+    <div class="item">
+      <div style="display:flex;align-items:center;gap:10px;min-width:0">
+        <img src="${p.img||''}" style="width:46px;height:46px;object-fit:cover;border-radius:12px;background:#fce7f3" onerror="this.style.display='none'">
+        <span>${p.name}<br><small style="color:#e11d48">₹${p.price} · ${p.category}</small></span>
+      </div>
+      <button class="del" onclick="delProduct('${p.id}')">काढा</button>
+    </div>`).join(''):'<p class="note">मेनूमध्ये अजून पदार्थ नाहीत.</p>';
+}
+async function delProduct(id){
+  if(!confirm('हा पदार्थ कायमचा काढायचा आहे का?')) return;
+  try{await db.collection('products').doc(id).delete();alert('पदार्थ काढला.');}
+  catch(e){alert('पदार्थ काढता आला नाही: '+friendlyError(e));}
+}
+function readImage(file){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();
+    r.onload=()=>resolve(r.result);
+    r.onerror=reject;
+    r.readAsDataURL(file);
+  });
+}
+async function addProduct(){
+  const name=document.getElementById('name').value.trim();
+  const cat=document.getElementById('cat').value;
+  const price=Number(document.getElementById('price').value);
+  const file=document.getElementById('img').files[0];
+  if(!name||!price){alert('नाव आणि किंमत भरा.');return;}
+  try{
+    let img=defaultProducts[0].img;
+    if(file){
+      if(file.size>5*1024*1024){alert('कृपया 5 MB पेक्षा कमी फोटो निवडा.');return;}
+      const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+      const ref=storage.ref('products/'+Date.now()+'_'+safeName);
+      const upload=await ref.put(file);
+      img=await upload.ref.getDownloadURL();
+    }
+    await db.collection('products').add({
+      name,category:cat,price,img,
+      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    document.getElementById('name').value='';
+    document.getElementById('price').value='';
+    document.getElementById('img').value='';
+    alert('पदार्थ Firebase मेनूमध्ये जोडला.');
+  }catch(e){alert('पदार्थ जोडता आला नाही: '+friendlyError(e));}
+}
+auth.onAuthStateChanged(user=>{if(user) showPanel(); else showLogin();});
 </script>
 </body>
 </html>

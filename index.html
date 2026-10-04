@@ -32,14 +32,19 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .site-header { min-height: var(--header-height); padding-top: max(1rem, env(safe-area-inset-top)); }
-        .content-width { width: min(100%, 760px); margin-left: auto; margin-right: auto; }
+        .content-width { width: min(100%, 430px); margin-left: auto; margin-right: auto; }
         .category-nav { top: var(--header-height); width: 100%; }
-        .category-inner { width: min(100%, 760px); margin: 0 auto; }
+        .category-inner { width: min(100%, 430px); margin: 0 auto; }
         .products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .product-card { min-width: 0; }
         .product-card img { display: block; }
-        .floating-cart { width: min(calc(100% - 2rem), 760px); left: 50%; right: auto; transform: translateX(-50%); padding-bottom: env(safe-area-inset-bottom); }
-        @media (min-width: 768px) { .products-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        .floating-cart { width: min(calc(100% - 1rem), 430px); left: 50%; right: auto; transform: translateX(-50%); padding-bottom: env(safe-area-inset-bottom); }
+        @media (min-width: 600px) {
+            body { max-width: 430px; margin: 0 auto; box-shadow: 0 0 45px rgba(0,0,0,.12); }
+            .content-width, .category-inner { width: 100%; }
+            .products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .floating-cart { width: 420px; }
+        }
         @media (max-width: 480px) {
             :root { --header-height: 108px; }
             .mobile-header-inner { gap: 8px; }
@@ -79,9 +84,6 @@
                 <a href="tel:+919860271523" class="bg-white/20 hover:bg-white/30 p-2.5 rounded-2xl backdrop-blur-md border border-white/30 text-white transition active:scale-95" title="कॉल करा">
                     📞
                 </a>
-                <button onclick="openAdminLogin()" class="bg-white/20 backdrop-blur-md border border-white/30 text-white px-2.5 py-1.5 rounded-2xl hover:bg-white/30 transition shadow-sm active:scale-95 text-xs font-bold flex items-center gap-1">
-                    ⚙️ ॲडमिन
-                </button>
             </div>
         </div>
     </header>
@@ -206,7 +208,7 @@
     <!-- Checkout Modal (टेबल नंबर काढला आहे) -->
     <div id="checkout-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
         <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl">
-            <h2 class="text-lg font-bold mb-3 text-gray-800">ऑर्डर माहिती</h2>
+            <h2 class="text-lg font-bold mb-1 text-gray-800">ऑर्डर माहिती</h2><p class="text-[11px] text-green-600 font-semibold mb-3">💬 ऑर्डर थेट दुकानाच्या WhatsApp वर पाठवली जाईल.</p>
             <input type="text" id="cust-name" placeholder="तुमचे नाव *" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl mb-3 text-sm focus:ring-2 focus:ring-rose-400 outline-none">
             <textarea id="cust-remark" rows="2" placeholder="काही विशेष सूचना/शेरा? (उदा. पार्सल द्या, कमी गोड, जास्त चमचे इ.)" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl mb-3 text-xs focus:ring-2 focus:ring-rose-400 outline-none"></textarea>
             
@@ -217,7 +219,7 @@
 
             <div class="flex gap-2">
                 <button onclick="closeCheckout()" class="w-1/2 bg-gray-100 text-gray-600 py-3 rounded-xl font-semibold text-xs">मागे जा</button>
-                <button onclick="sendWhatsAppOrder()" class="w-1/2 bg-green-600 text-white py-3 rounded-xl font-bold text-xs shadow-md hover:bg-green-700 transition">WhatsApp वर पाठवा</button>
+                <button onclick="sendWhatsAppOrder()" class="w-1/2 bg-green-600 text-white py-3 rounded-xl font-bold text-xs shadow-md hover:bg-green-700 transition flex items-center justify-center gap-1">💬 WhatsApp वर ऑर्डर</button>
             </div>
         </div>
     </div>
@@ -243,47 +245,6 @@
         </div>
         <p class="text-[10px] text-gray-400">© 2026 Carnival Ice Cream, Bhilawadi.</p>
     </footer>
-
-    <!-- Admin Panel Modal -->
-    <div id="admin-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
-        <div class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div id="admin-login-view">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-bold text-gray-800">व्यवस्थापक लॉगइन</h2>
-                    <button onclick="closeAdminModal()" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 font-bold flex items-center justify-center">✕</button>
-                </div>
-                <input type="password" id="admin-pass" placeholder="पासवर्ड टाका (डिफॉल्ट: 1234)" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl mb-3 text-sm">
-                <button onclick="checkAdminLogin()" class="w-full bg-rose-500 text-white py-3 rounded-xl font-bold text-sm shadow hover:bg-rose-600 transition">लॉगइन करा</button>
-            </div>
-
-            <div id="admin-dashboard-view" class="hidden">
-                <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
-                    <h2 class="text-base font-bold text-rose-500">⚙ नवीन पदार्थ जोडा</h2>
-                    <button onclick="closeAdminModal()" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 font-bold flex items-center justify-center">✕</button>
-                </div>
-
-                <div class="space-y-3 mb-6">
-                    <input type="text" id="new-name" placeholder="पदार्थाचे नाव (उदा. मलाई कुल्फी)" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-sm">
-                    <select id="new-category" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-sm">
-                        <option value="आईस्क्रीम">आईस्क्रीम</option>
-                        <option value="मिल्कशेख">मिल्कशेख</option>
-                        <option value="लस्सी">लस्सी</option>
-                        <option value="सोडा/कोल्डड्रिंक्स">सोडा/कोल्डड्रिंक्स</option>
-                    </select>
-                    <input type="number" id="new-price" placeholder="किंमत (₹)" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl text-sm">
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">गॅलरीतून फोटो निवडा:</label>
-                        <input type="file" id="new-img-file" accept="image/*" class="w-full border border-gray-200 p-2 rounded-xl text-xs bg-gray-50">
-                    </div>
-                    <button onclick="addNewProduct()" class="w-full bg-rose-500 text-white py-3 rounded-xl font-bold text-sm shadow hover:bg-rose-600 transition">मेनूमध्ये जोडा</button>
-                </div>
-
-                <h3 class="font-bold text-gray-700 text-xs mb-2 uppercase tracking-wide">सध्या उपलब्ध असलेले पदार्थ:</h3>
-                <div id="admin-product-list" class="space-y-2 max-h-44 overflow-y-auto text-xs border border-gray-100 p-2 rounded-2xl bg-gray-50"></div>
-            </div>
-        </div>
-    </div>
-
     <!-- JavaScript Logic -->
     <script>
         let currentSlide = 0;
@@ -483,85 +444,7 @@
 
             let shopWhatsApp = "919860271523";
             window.open(`https://wa.me/${shopWhatsApp}?text=${encodeURIComponent(message)}`, '_blank');
-        }
-
-        function openAdminLogin() {
-            document.getElementById('admin-modal').classList.remove('hidden');
-            document.getElementById('admin-login-view').classList.remove('hidden');
-            document.getElementById('admin-dashboard-view').classList.add('hidden');
-            document.getElementById('admin-pass').value = '';
-        }
-
-        function closeAdminModal() {
-            document.getElementById('admin-modal').classList.add('hidden');
-        }
-
-        function checkAdminLogin() {
-            let pass = document.getElementById('admin-pass').value;
-            if (pass === '1234') {
-                document.getElementById('admin-login-view').classList.add('hidden');
-                document.getElementById('admin-dashboard-view').classList.remove('hidden');
-                renderAdminProductList();
-            } else {
-                alert('चुकीचा पासवर्ड!');
-            }
-        }
-
-        function addNewProduct() {
-            let name = document.getElementById('new-name').value;
-            let category = document.getElementById('new-category').value;
-            let price = Number(document.getElementById('new-price').value);
-            let fileInput = document.getElementById('new-img-file');
-
-            if (!name || !price) {
-                alert('कृपया नाव आणि किंमत टाका!');
-                return;
-            }
-
-            if (fileInput.files && fileInput.files[0]) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    let imgData = e.target.result;
-                    products.push({ name, category, price, img: imgData });
-                    saveProducts();
-                    renderAdminProductList();
-                    resetAdminForm();
-                };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                let fallbackImg = 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80';
-                products.push({ name, category, price, img: fallbackImg });
-                saveProducts();
-                renderAdminProductList();
-                resetAdminForm();
-            }
-        }
-
-        function resetAdminForm() {
-            document.getElementById('new-name').value = '';
-            document.getElementById('new-price').value = '';
-            document.getElementById('new-img-file').value = '';
-            alert('पदार्थ यशस्वीरित्या मेनूमध्ये जोडला गेला!');
-        }
-
-        function deleteProduct(index) {
-            if (confirm('हा पदार्थ मेनूमधून काढायचा आहे का?')) {
-                products.splice(index, 1);
-                saveProducts();
-                renderAdminProductList();
-            }
-        }
-
-        function renderAdminProductList() {
-            let adminListHTML = '';
-            products.forEach((p, index) => {
-                adminListHTML += `
-                    <div class="flex justify-between items-center bg-white p-2 rounded-xl shadow-xs border border-gray-100">
-                        <span class="font-medium text-gray-700">${p.name} (${p.category} - ₹${p.price})</span>
-                        <button onclick="deleteProduct(${index})" class="bg-rose-100 text-rose-600 px-2.5 py-1 rounded-lg font-bold hover:bg-rose-200 transition">काढा</button>
-                    </div>
-                `;
-            });
+        });
             document.getElementById('admin-product-list').innerHTML = adminListHTML;
         }
 

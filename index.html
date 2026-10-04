@@ -72,39 +72,22 @@
                     📞
                 </a>
                 <a href="./admin.html" class="bg-white/20 hover:bg-white/30 p-2 rounded-2xl backdrop-blur-md border border-white/30 text-white transition active:scale-95 text-xs font-bold" title="व्यवस्थापक विभाग">
-                    ⚙️ ॲडमिन
+                    ⚙ ॲडमिन
                 </a>
             </div>
         </div>
     </header>
 
-    <!-- Auto-Sliding Image Banner (ॲडमिन पॅनलवरून बदलता येतो) -->
+    <!-- Dynamic Auto-Sliding Image Banner -->
     <div class="content-width px-4 mt-3">
         <div class="hero-banner relative w-full h-44 rounded-3xl overflow-hidden shadow-md bg-gray-200">
             <div id="slider-track" class="flex transition-transform duration-700 ease-out h-full">
                 <div class="w-full flex-shrink-0 h-full relative">
                     <img src="https://images.unsplash.com/photo-1501443762994-82bd5dace89a?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent flex items-end p-4">
-                        <span class="text-white text-xs font-bold drop-shadow">🍨 स्पेशल स्कूप्स आणि संडे उपलब्ध!</span>
-                    </div>
-                </div>
-                <div class="w-full flex-shrink-0 h-full relative">
-                    <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent flex items-end p-4">
-                        <span class="text-white text-xs font-bold drop-shadow">✨ अस्सल चवीची मलाई लस्सी आणि शेक्स</span>
-                    </div>
-                </div>
-                <div class="w-full flex-shrink-0 h-full relative">
-                    <img src="https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent flex items-end p-4">
-                        <span class="text-white text-xs font-bold drop-shadow">🎉 Carnival स्पेशल आईस्क्रीम व्हरायटी!</span>
-                    </div>
                 </div>
             </div>
             <div class="absolute bottom-2 right-3 flex gap-1.5 z-10" id="slider-dots">
                 <span class="w-2 h-2 rounded-full bg-white"></span>
-                <span class="w-2 h-2 rounded-full bg-white/50"></span>
-                <span class="w-2 h-2 rounded-full bg-white/50"></span>
             </div>
         </div>
     </div>
@@ -143,8 +126,8 @@
     <div id="image-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden z-50 transition-all">
         <div class="relative max-w-sm w-full bg-white rounded-3xl overflow-hidden shadow-2xl">
             <button onclick="closeImageModal()" class="absolute top-3 right-3 bg-black/50 hover:bg-black text-white w-9 h-9 rounded-full flex items-center justify-center font-bold text-base z-10 transition">✕</button>
-            <div class="w-full h-72 bg-gray-100 overflow-hidden">
-                <img id="modal-preview-img" src="" alt="Preview" class="w-full h-full object-cover">
+            <div class="w-full h-72 bg-gray-100 overflow-hidden flex items-center justify-center p-2">
+                <img id="modal-preview-img" src="" alt="Preview" class="w-full h-full object-contain">
             </div>
             <div class="p-4 bg-white">
                 <span id="modal-preview-cat" class="text-[10px] bg-rose-100 text-rose-600 font-bold px-2 py-0.5 rounded-full"></span>
@@ -175,7 +158,7 @@
         </div>
     </div>
 
-    <!-- Review Bucket Modal (थेट WhatsApp वर पाठवण्याचे बटण) -->
+    <!-- Review Bucket Modal -->
     <div id="bucket-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 hidden z-50">
         <div class="bg-white w-full max-w-md rounded-t-[2.5rem] sm:rounded-3xl p-6 shadow-2xl max-h-[85vh] flex flex-col">
             <div class="flex justify-between items-center border-b border-gray-100 pb-3 mb-3">
@@ -190,7 +173,6 @@
                     <span class="text-sm">देय रक्कम:</span>
                     <span class="text-rose-500 text-xl font-extrabold">₹ <span id="modal-cart-total">0</span></span>
                 </div>
-                <!-- थेट WhatsApp वर ऑर्डर पाठवणारे बटण -->
                 <button onclick="sendWhatsAppOrderDirectly()" class="w-full bg-gradient-to-r from-emerald-500 to-green-600 text-white py-3.5 rounded-2xl font-bold hover:shadow-lg shadow-md text-sm transition flex items-center justify-center gap-2 active:scale-95">
                     <span>💬 WhatsApp वर थेट ऑर्डर पाठवा</span>
                     <span>→</span>
@@ -217,7 +199,17 @@
             <a href="https://www.instagram.com/carnival.ice_cream?stkn=NXZmeWE2MG0ybDAw" target="_blank" class="w-8 h-8 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center font-bold shadow-xs hover:bg-pink-600 hover:text-white transition" title="Instagram">📸</a>
             <a href="https://wa.me/919860271523" target="_blank" class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold shadow-xs hover:bg-emerald-600 hover:text-white transition" title="WhatsApp">💬</a>
         </div>
-        <p class="text-[10px] text-gray-400">© 2026 Carnival Ice Cream, Bhilawadi.</p>
+
+        <!-- नियम व अटी -->
+        <p class="text-[11px] text-gray-500 font-semibold mb-2">⚖️ नियम व अटी लागू</p>
+
+        <p class="text-[10px] text-gray-400 mb-2">© 2026 Carnival Ice Cream, Bhilawadi.</p>
+        
+        <!-- eDost ब्रँडिंग -->
+        <div class="pt-2 border-t border-pink-100/60 flex items-center justify-center gap-1 text-[11px] text-gray-600 font-bold">
+            <span>✨ Developed by</span>
+            <span class="text-rose-600 font-black tracking-wide">eDost</span>
+        </div>
     </footer>
 
     <!-- Firebase + JavaScript Logic -->
@@ -236,24 +228,54 @@
         const db = firebase.firestore();
 
         let currentSlide = 0;
-        const totalSlides = 3;
-        setInterval(() => {
-            currentSlide = (currentSlide + 1) % totalSlides;
-            const track = document.getElementById('slider-track');
-            if (track) {
-                track.style.transform = `translateX(-${currentSlide * 100}%)`;
-                const dots = document.getElementById('slider-dots').children;
-                for (let i = 0; i < dots.length; i++) {
-                    dots[i].className = i === currentSlide ? 'w-2 h-2 rounded-full bg-white' : 'w-2 h-2 rounded-full bg-white/50';
+        let totalBannerSlides = 1;
+        let bannerInterval = null;
+
+        function startBannerSlider() {
+            if (bannerInterval) clearInterval(bannerInterval);
+            bannerInterval = setInterval(() => {
+                if (totalBannerSlides <= 1) return;
+                currentSlide = (currentSlide + 1) % totalBannerSlides;
+                const track = document.getElementById('slider-track');
+                if (track) {
+                    track.style.transform = `translateX(-${currentSlide * 100}%)`;
+                    const dots = document.getElementById('slider-dots').children;
+                    for (let i = 0; i < dots.length; i++) {
+                        dots[i].className = i === currentSlide ? 'w-2 h-2 rounded-full bg-white' : 'w-2 h-2 rounded-full bg-white/50';
+                    }
                 }
+            }, 3500);
+        }
+
+        db.collection('banners_list').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+            const banners = [];
+            snapshot.forEach(doc => banners.push(doc.data()));
+
+            const track = document.getElementById('slider-track');
+            const dotsContainer = document.getElementById('slider-dots');
+
+            if (banners.length > 0) {
+                totalBannerSlides = banners.length;
+                track.innerHTML = banners.map(b => `
+                    <div class="w-full flex-shrink-0 h-full relative">
+                        <img src="${b.img}" class="w-full h-full object-cover">
+                    </div>
+                `).join('');
+
+                dotsContainer.innerHTML = banners.map((_, i) => `
+                    <span class="${i === 0 ? 'w-2 h-2 rounded-full bg-white' : 'w-2 h-2 rounded-full bg-white/50'}"></span>
+                `).join('');
+
+                currentSlide = 0;
+                track.style.transform = `translateX(0%)`;
+                startBannerSlider();
             }
-        }, 3500);
+        });
 
         let products = [];
         let cart = [];
         let currentCategory = 'सर्व';
 
-        // Firestore Real-Time Products
         db.collection("products").orderBy("createdAt", "desc").onSnapshot(snapshot => {
             products = [];
             snapshot.forEach(doc => {
@@ -261,28 +283,7 @@
             });
             renderProducts(currentCategory);
         }, error => {
-            console.error("Firestore read error:", error);
             document.getElementById('product-list').innerHTML = '<p class="col-span-2 text-center text-rose-500 py-10 text-xs">मेनू लोड करता आला नाही.</p>';
-        });
-
-        // Firestore Real-Time Banners
-        db.collection('banners').onSnapshot(snapshot => {
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                const slot = doc.id;
-                let slideIndex = slot === 'banner1' ? 0 : slot === 'banner2' ? 1 : 2;
-                const slides = document.querySelectorAll('#slider-track > div');
-                if (slides[slideIndex]) {
-                    if (data.img) {
-                        const imgTag = slides[slideIndex].querySelector('img');
-                        if (imgTag) imgTag.src = data.img;
-                    }
-                    if (data.text) {
-                        const spanTag = slides[slideIndex].querySelector('span');
-                        if (spanTag) spanTag.innerText = data.text;
-                    }
-                }
-            });
         });
 
         function renderProducts(category) {
@@ -299,8 +300,8 @@
                 listHTML += `
                     <div class="product-card bg-white p-3 rounded-3xl shadow-sm border border-pink-50 flex flex-col justify-between hover:shadow-md transition">
                         <div>
-                            <div class="product-card-image w-full h-28 rounded-2xl overflow-hidden mb-2.5 relative bg-pink-100 cursor-pointer group" onclick="showFullImage('${productJSON}')">
-                                <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                            <div class="product-card-image w-full h-28 rounded-2xl overflow-hidden mb-2.5 relative bg-pink-50 flex items-center justify-center p-1.5 cursor-pointer group" onclick="showFullImage('${productJSON}')">
+                                <img src="${p.img}" alt="${p.name}" class="w-full h-full object-contain group-hover:scale-105 transition duration-300">
                                 <span class="absolute top-2 left-2 text-[10px] bg-white/90 backdrop-blur-md text-rose-600 font-bold px-2 py-0.5 rounded-full shadow-sm">${p.category}</span>
                                 <span class="absolute bottom-1.5 right-1.5 bg-black/40 text-white text-[10px] px-1.5 py-0.5 rounded-md backdrop-blur-xs">🔍 पहा</span>
                             </div>
@@ -389,7 +390,6 @@
         function openBucketModal() { document.getElementById('bucket-modal').classList.remove('hidden'); }
         function closeBucketModal() { document.getElementById('bucket-modal').classList.add('hidden'); }
 
-        // थेट WhatsApp वर ऑर्डर पाठवणे (कोणताही फॉर्म नाही)
         function sendWhatsAppOrderDirectly() {
             if (!cart.length) { alert('कृपया आधी पदार्थ बकेटमध्ये जोडा.'); return; }
 
@@ -398,7 +398,7 @@
 
             let message = `*🍦 Carnival Ice Cream, Bhilawadi*\n`;
             message += `━━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `*नवीन ऑर्डर:*\n`;
+            message += `* ऑर्डर:*\n`;
             cart.forEach(i => { 
                 message += `▫️ ${i.name} (${i.qty} नग) = ₹${i.price * i.qty}\n`; 
             });
@@ -411,7 +411,6 @@
 
             window.open(`https://wa.me/919860271523?text=${encodeURIComponent(message)}`, '_blank');
 
-            // ऑर्डर पाठवल्यावर बकेट रिकामी करून बंद करणे
             cart = [];
             closeBucketModal();
             updateCartUI();

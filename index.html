@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Mukta:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        :root { --header-height: 104px; }
+        :root { --header-height: 125px; }
         * { box-sizing: border-box; }
         html { width: 100%; overflow-x: hidden; scroll-behavior: smooth; }
         body {
@@ -31,7 +31,7 @@
         .brand-font { font-family: 'Kalam', 'Mukta', sans-serif; font-weight:700; letter-spacing:0.2px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .site-header { min-height: var(--header-height); padding-top: max(1rem, env(safe-area-inset-top)); }
+        .site-header { min-height: var(--header-height); padding-top: max(0.85rem, env(safe-area-inset-top)); }
         .content-width { width: min(100%, 430px); margin-left: auto; margin-right: auto; }
         .category-nav { top: var(--header-height); width: 100%; }
         .category-inner { width: min(100%, 430px); margin: 0 auto; }
@@ -44,7 +44,7 @@
             .floating-cart { width: 420px; }
         }
         @media (max-width: 480px) {
-            :root { --header-height: 108px; }
+            :root { --header-height: 130px; }
             .hero-banner { height: 180px; }
             .products-grid { gap: 10px; }
             .product-card { padding: 10px; border-radius: 22px; }
@@ -55,24 +55,42 @@
 </head>
 <body class="bg-[#FFF5F7] text-gray-800 pb-36">
 
-    <!-- Top Header -->
-    <header class="site-header bg-gradient-to-r from-rose-500 via-pink-500 to-amber-400 text-white pt-4 pb-4 px-4 shadow-lg sticky top-0 z-40">
-        <div class="content-width flex justify-between items-center">
-            <div>
-                <span class="bg-white/20 backdrop-blur-md text-[10px] font-bold px-2 py-0.5 rounded-full border border-white/30 uppercase tracking-wider">🍦 १००% शुध्द & टेस्टी</span>
-                <h1 class="brand-font text-2xl font-bold tracking-tight drop-shadow-sm mt-0.5">Carnival Ice Cream</h1>
-                <p class="text-xs text-rose-100 font-semibold">भिलवडी (Bhilawadi)</p>
-                <a href="https://share.google/nsYQ72VMPlfgXjMY6" target="_blank" class="inline-flex items-center gap-1 bg-amber-400 text-gray-900 font-extrabold text-[10px] px-2.5 py-0.5 rounded-full mt-1.5 shadow-sm active:scale-95 transition">
-                    <span>⭐ ५.० गुगल रिव्ह्यू द्या</span>
-                    <span>↗</span>
-                </a>
+    <!-- Top Header: मोठा व ठळक बॅनर + प्रोप्रा. श्वेता मगदूम + आईस्क्रीमचे फोटो -->
+    <header class="site-header bg-gradient-to-r from-rose-600 via-pink-600 to-amber-500 text-white pt-4 pb-4 px-4 shadow-xl sticky top-0 z-40">
+        <div class="content-width flex justify-between items-center gap-2">
+            <div class="flex-1">
+                <div class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border border-white/30 uppercase tracking-wider text-amber-200">
+                    <span>🍨</span>
+                    <span>१००% शुध्द & टेस्टी आईस्क्रीम</span>
+                </div>
+                
+                <!-- मोठे व ठळक ब्रँड नाव -->
+                <h1 class="brand-font text-3xl font-extrabold tracking-tight drop-shadow-md mt-1 leading-none text-white">
+                    Carnival Ice Cream
+                </h1>
+
+                <!-- प्रोप्रा. श्वेता मगदूम मोठे व ठळक नाव -->
+                <p class="text-sm font-extrabold text-amber-200 mt-1 drop-shadow-sm flex items-center gap-1">
+                    <span>👑</span>
+                    <span>प्रोप्रा. श्वेता मगदूम</span>
+                    <span class="text-white/80 text-xs font-semibold">| भिलवडी</span>
+                </p>
+
+                <div class="flex items-center gap-2 mt-1.5">
+                    <a href="https://share.google/nsYQ72VMPlfgXjMY6" target="_blank" class="inline-flex items-center gap-1 bg-amber-400 text-gray-900 font-extrabold text-[10px] px-2.5 py-0.5 rounded-full shadow-sm active:scale-95 transition">
+                        <span>⭐ ५.० गुगल रिव्ह्यू द्या</span>
+                        <span>↗</span>
+                    </a>
+                </div>
             </div>
-            <div class="flex items-center gap-2">
-                <a href="tel:+919860271523" class="bg-white/20 hover:bg-white/30 p-2.5 rounded-2xl backdrop-blur-md border border-white/30 text-white transition active:scale-95" title="कॉल करा">
-                    📞
-                </a>
-                <a href="./admin.html" class="bg-white/20 hover:bg-white/30 p-2 rounded-2xl backdrop-blur-md border border-white/30 text-white transition active:scale-95 text-xs font-bold" title="व्यवस्थापक विभाग">
-                    ⚙ ॲडमिन
+
+            <!-- हेडरमधील आईस्क्रीमचा आकर्षक गोल फोटो व कॉल बटण -->
+            <div class="flex flex-col items-center gap-1.5">
+                <div class="w-14 h-14 rounded-full border-2 border-white/80 shadow-lg overflow-hidden bg-rose-100 flex-shrink-0">
+                    <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=150&q=80" alt="Ice Cream" class="w-full h-full object-cover">
+                </div>
+                <a href="tel:+919860271523" class="bg-white/25 hover:bg-white/35 px-3 py-1 rounded-full backdrop-blur-md border border-white/40 text-white transition active:scale-95 text-[11px] font-bold flex items-center gap-1" title="कॉल करा">
+                    <span>📞 कॉल</span>
                 </a>
             </div>
         </div>
@@ -191,7 +209,8 @@
             </a>
         </div>
 
-        <h3 class="brand-font text-gray-800 text-base mb-0.5">Carnival Ice Cream</h3>
+        <h3 class="brand-font text-gray-800 text-lg font-bold mb-0.5">Carnival Ice Cream</h3>
+        <p class="text-xs font-bold text-rose-600 mb-1">👑 प्रोप्रा. श्वेता मगदूम</p>
         <p class="mb-3 text-[11px] font-semibold text-gray-600">भिलवडी (Bhilawadi) | संपर्क: +91 98602 71523</p>
         
         <div class="flex justify-center items-center gap-3 mb-4">
@@ -397,8 +416,9 @@
             const instaLink = "https://www.instagram.com/carnival.ice_cream?stkn=NXZmeWE2MG0ybDAw";
 
             let message = `*🍦 Carnival Ice Cream, Bhilawadi*\n`;
+            message += `👑 *प्रोप्रा. श्वेता मगदूम*\n`;
             message += `━━━━━━━━━━━━━━━━━━━━━\n`;
-            message += `* ऑर्डर:*\n`;
+            message += `*नवीन ऑर्डर:*\n`;
             cart.forEach(i => { 
                 message += `▫️ ${i.name} (${i.qty} नग) = ₹${i.price * i.qty}\n`; 
             });

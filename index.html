@@ -6,17 +6,17 @@
     <title>Carnival Ice Cream, Bhilawadi - डिजिटल मेनू</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Mukta & Rozha One -->
+    <!-- Google Fonts: Marathi calligraphy + Mukta -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Rozha+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Mukta:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root { --header-height: 104px; }
         * { box-sizing: border-box; }
         html { width: 100%; overflow-x: hidden; scroll-behavior: smooth; }
         body {
-            font-family: 'Mukta', sans-serif;
+            font-family: 'Kalam', 'Mukta', sans-serif;
             width: 100%;
             min-width: 0;
             overflow-x: hidden;
@@ -28,7 +28,7 @@
             background-position: center;
             background-attachment: fixed;
         }
-        .brand-font { font-family: 'Rozha One', serif; letter-spacing: 0.5px; }
+        .brand-font { font-family: 'Kalam', 'Mukta', sans-serif; font-weight:700; letter-spacing:0.2px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .site-header { min-height: var(--header-height); padding-top: max(1rem, env(safe-area-inset-top)); }
@@ -209,8 +209,8 @@
     <div id="checkout-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
         <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl">
             <h2 class="text-lg font-bold mb-1 text-gray-800">ऑर्डर माहिती</h2><p class="text-[11px] text-green-600 font-semibold mb-3">💬 ऑर्डर थेट दुकानाच्या WhatsApp वर पाठवली जाईल.</p>
-            <input type="text" id="cust-name" placeholder="तुमचे नाव *" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl mb-3 text-sm focus:ring-2 focus:ring-rose-400 outline-none">
-            <textarea id="cust-remark" rows="2" placeholder="काही विशेष सूचना/शेरा? (उदा. पार्सल द्या, कमी गोड, जास्त चमचे इ.)" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl mb-3 text-xs focus:ring-2 focus:ring-rose-400 outline-none"></textarea>
+            <input type="text" id="cust-name" autocomplete="off" placeholder="तुमचे नाव *" class="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl mb-3 text-sm focus:ring-2 focus:ring-rose-400 outline-none">
+            <textarea id="cust-remark" autocomplete="off" rows="2" placeholder="काही विशेष सूचना/शेरा? (उदा. पार्सल द्या, कमी गोड, जास्त चमचे इ.)" class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-xl mb-3 text-xs focus:ring-2 focus:ring-rose-400 outline-none"></textarea>
             
             <div class="bg-amber-50 border border-amber-200 p-2.5 rounded-2xl mb-4 text-[11px] text-amber-900 leading-relaxed">
                 <p class="font-bold">💡 पेमेंट माहिती:</p>
@@ -431,6 +431,20 @@
         });
 
         renderProducts('सर्व');
+
+        // मागील browser history/bfcache मधील जुना customer data ठेवू नका.
+        // प्रत्येक नवीन visit/back-forward वेळी bucket आणि checkout fields स्वच्छ राहतील.
+        function clearOldSessionData() {
+            cart = [];
+            document.getElementById('cust-name').value = '';
+            document.getElementById('cust-remark').value = '';
+            closeBucketModal();
+            closeCheckout();
+            updateCartUI();
+        }
+        window.addEventListener('pageshow', function () {
+            clearOldSessionData();
+        });
     </script>
 </body>
 </html>
